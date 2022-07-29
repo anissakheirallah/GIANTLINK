@@ -1,7 +1,5 @@
 package com.giantlink.project.entities;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Set;
 
 import javax.persistence.Entity;

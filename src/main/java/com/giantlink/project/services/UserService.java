@@ -19,5 +19,5 @@ public interface UserService {
 	
 	void grantRole(Long userId,Long roleId);
 	
-	void removeRole(Long userId,Long roleId);
+	void revokeRole(Long userId,Long roleId);
 }
