@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,8 +27,20 @@ public class Lead {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
-	private Long idClient;
-	private Long idUser;
+	
+	@ManyToOne()
+	private Client client;
+	
+	@ManyToOne()
+	private User user;
+	
+	@ManyToOne()
+	private Commercial commercial;
+	
+	@OneToMany
+	private String options; 
+	
+	private String Services;
 
 	
 

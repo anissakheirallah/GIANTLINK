@@ -16,5 +16,5 @@ public class UserResponse {
 	private String userName;
 	private String password;
 	
-	private Set<Role> roles;
+	private Role role;
 }

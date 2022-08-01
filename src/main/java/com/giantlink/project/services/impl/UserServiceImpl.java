@@ -12,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Role;
@@ -23,10 +24,7 @@ import com.giantlink.project.repositories.RoleRepository;
 import com.giantlink.project.repositories.UserRepository;
 import com.giantlink.project.services.UserService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @Service
-@Slf4j
 public class UserServiceImpl implements UserService,UserDetailsService {
 	
 	@Autowired
@@ -34,6 +32,8 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 	
 	@Autowired
 	RoleRepository roleRepository;
+	
+	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Override
 	public UserResponse addUser(UserRequest user) {
@@ -41,8 +41,9 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 		if(userSearch.isPresent()) {
 		return null;
 		}else {
-			User us = new User();
-			us.builder().name(user.getName()).password(user.getPassword()).userName(user.getUserName()).build();
+			User us = User.builder().name(user.getName()).password(encoder.encode(user.getPassword())).userName(user.getUserName()).build();
+			Optional<Role> role = roleRepository.findById(user.getIdRole());
+			us.setRole(role.get());
 			return UserMapper.INSTANCE.mapResponse(userRepository.save(us));
 		}
 	}
@@ -67,11 +68,8 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 			userSearch.get().setName(user.getName());
 			userSearch.get().setPassword(user.getPassword());
 			userSearch.get().setUserName(user.getUserName());
-			for (Long roleid : user.getRoles()) {
-				Optional<Role> role = roleRepository.findById(roleid);
-				roleList.add(role.get());
-			}
-			userSearch.get().setRoles(roleList);
+			Optional<Role> role = roleRepository.findById(user.getIdRole());
+			userSearch.get().setRole(role.get());
 			
 			return UserMapper.INSTANCE.mapResponse(userRepository.save(userSearch.get()));
 		}
@@ -92,34 +90,20 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 		return UserMapper.INSTANCE.mapResponses(userRepository.findAll());
 	}
 
+	
 	@Override
-	public void grantRole(Long userId,Long roleId) {
+	public void changeRole(Long userId, Long roleId) {
+		
 		Optional<User> userSearch =  userRepository.findById(userId);
 		if(userSearch.isEmpty()) {
 			
 		}else {
 			Optional<Role> roleSearch =  roleRepository.findById(roleId);
 			if(roleSearch.isEmpty()) {
+				
 			}else {
-				userSearch.get().getRoles().add(roleSearch.get());
+				userSearch.get().setRole(roleSearch.get());;
 				userRepository.save(userSearch.get());
-			}
-		}
-	}
-
-	@Override
-	public void revokeRole(Long userId,Long roleId) {
-		Optional<User> userSearch =  userRepository.findById(userId);
-		if(userSearch.isEmpty()) {
-			
-		}else {
-			Optional<Role> roleSearch =  roleRepository.findById(roleId);
-			if(roleSearch.isEmpty()) {
-				
-			}else if(userSearch.get().getRoles().contains(roleSearch)) {
-				userSearch.get().getRoles().remove(roleSearch);
-				userRepository.save(userSearch.get());
-				
 			}
 		}
 	}
@@ -133,11 +117,13 @@ public class UserServiceImpl implements UserService,UserDetailsService {
 			System.out.println("user exist");	
 		}
 		Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
-		user.getRoles().forEach(role ->{
-			authorities.add(new SimpleGrantedAuthority(role.getName().toString()));
-		});
+		
+		authorities.add(new SimpleGrantedAuthority(user.getRole().getName().toString()));
+
 		return new org.springframework.security.core.userdetails.User(user.getUserName(),user.getPassword(),authorities);
 	}
+
+
 
 }
 
