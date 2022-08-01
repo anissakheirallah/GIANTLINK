@@ -17,7 +17,5 @@ public interface UserService {
 	
 	List<UserResponse> getUsers();
 	
-	void grantRole(Long userId,Long roleId);
-	
-	void revokeRole(Long userId,Long roleId);
+	void changeRole(Long userId,Long roleId);
 }

@@ -60,20 +60,13 @@ public class UserController {
 		return new ResponseEntity<UserResponse>(userService.updateUser(id, userRequest), HttpStatus.OK);
 	}
 	
-	
-	@PutMapping("/grant/{id}")
+	@PutMapping("/role/{id}/{idRole}")
 	public ResponseEntity<String> grantRole(@PathVariable("id") Long id,
 			@PathVariable("idRole") Long idRole) {
-		userService.grantRole(id, idRole);
+		userService.changeRole(id, idRole);
 		return new ResponseEntity<String>("Role Granted !", HttpStatus.ACCEPTED);
 	}
 	
-	@PutMapping("/revoke/{id}")
-	public ResponseEntity<String> revokeRole(@PathVariable("id") Long id,
-			@PathVariable("idRole") Long idRole) {
-		userService.revokeRole(id, idRole);
-		return new ResponseEntity<String>("Role Revoked !", HttpStatus.NOT_ACCEPTABLE);
-	}
 }
 
 
