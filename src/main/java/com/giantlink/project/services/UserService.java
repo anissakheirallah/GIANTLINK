@@ -15,6 +15,8 @@ public interface UserService {
 	
 	UserResponse getUser(Long id);
 	
+	UserResponse getUser(String userName);
+	
 	List<UserResponse> getUsers();
 	
 	void changeRole(Long userId,Long roleId);

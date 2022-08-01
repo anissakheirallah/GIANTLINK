@@ -16,9 +16,11 @@ public interface UserMapper {
 
 	UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-	UserResponse mapResponse(User entity);
-	
-	//User mapRequest(UserRequest entity);
+	UserResponse mapEntity(User entity);
+
+	User mapRequest(UserRequest entity);
+
+	User mapResponse(UserResponse entity);
 
 	Set<UserResponse> mapResponses(Set<User> entities);
 
