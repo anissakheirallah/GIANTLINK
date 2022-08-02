@@ -5,18 +5,20 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 
+import com.giantlink.project.exceptions.GlAlreadyExistException;
+import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.models.requests.TeamRequest;
 import com.giantlink.project.models.responses.TeamResponse;
 
 public interface TeamService {
 
-	TeamResponse addTeam(TeamRequest team);
+	TeamResponse addTeam(TeamRequest teamRequest) throws GlAlreadyExistException, GlNotFoundException;
 
-	void deleteTeam(Long id);
+	void deleteTeam(Long id) throws GlNotFoundException;
 
-	TeamResponse updateTeam(Long id, TeamRequest team);
+	TeamResponse updateTeam(Long id, TeamRequest teamRequest) throws GlNotFoundException;
 
-	TeamResponse getTeam(Long id);
+	TeamResponse getTeam(Long id) throws GlNotFoundException;
 
 	List<TeamResponse> getTeams();
 

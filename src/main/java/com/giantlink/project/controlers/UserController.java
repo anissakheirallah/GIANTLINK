@@ -36,6 +36,8 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantlink.project.entities.User;
+import com.giantlink.project.exceptions.GlAlreadyExistException;
+import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.UserMapper;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
@@ -58,28 +60,31 @@ public class UserController {
 	}
 
 	@PostMapping()
-	public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest) {
+	public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest)
+			throws GlAlreadyExistException, GlNotFoundException {
 		return new ResponseEntity<UserResponse>(userService.addUser(userRequest), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<UserResponse> getUser(@PathVariable Long id) {
+	public ResponseEntity<UserResponse> getUser(@PathVariable Long id) throws GlNotFoundException {
 		return new ResponseEntity<UserResponse>(userService.getUser(id), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable("id") Long id) {
+	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException {
 		userService.deleteUser(id);
 		return new ResponseEntity<String>("deleted !", HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest userRequest) {
+	public ResponseEntity<UserResponse> update(@PathVariable("id") Long id, @RequestBody UserRequest userRequest)
+			throws GlNotFoundException {
 		return new ResponseEntity<UserResponse>(userService.updateUser(id, userRequest), HttpStatus.OK);
 	}
 
 	@PutMapping("/role/{id}/{idRole}")
-	public ResponseEntity<String> grantRole(@PathVariable("id") Long id, @PathVariable("idRole") Long idRole) {
+	public ResponseEntity<String> grantRole(@PathVariable("id") Long id, @PathVariable("idRole") Long idRole)
+			throws GlNotFoundException {
 		userService.changeRole(id, idRole);
 		return new ResponseEntity<String>("Role Granted !", HttpStatus.ACCEPTED);
 	}

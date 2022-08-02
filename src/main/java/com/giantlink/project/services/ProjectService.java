@@ -5,18 +5,20 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 
+import com.giantlink.project.exceptions.GlAlreadyExistException;
+import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.models.requests.ProjectRequest;
 import com.giantlink.project.models.responses.ProjectResponse;
 
 public interface ProjectService {
 
-	ProjectResponse addProject(ProjectRequest project);
+	ProjectResponse addProject(ProjectRequest projectRequest) throws GlNotFoundException, GlAlreadyExistException;
 
-	void deleteProject(Long id);
+	void deleteProject(Long id) throws GlNotFoundException;
 
-	ProjectResponse updateProject(Long id, ProjectRequest Project);
+	ProjectResponse updateProject(Long id, ProjectRequest projectRequest) throws GlNotFoundException;
 
-	ProjectResponse getProject(Long id);
+	ProjectResponse getProject(Long id) throws GlNotFoundException;
 
 	List<ProjectResponse> getProjects();
 

@@ -21,6 +21,8 @@ import org.springframework.stereotype.Service;
 import com.giantlink.project.entities.Role;
 import com.giantlink.project.entities.Team;
 import com.giantlink.project.entities.User;
+import com.giantlink.project.exceptions.GlAlreadyExistException;
+import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.UserMapper;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
@@ -48,64 +50,71 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Override
-	public UserResponse addUser(UserRequest user) {
-		Optional<User> userSearch = userRepository.findByuserName(user.getUserName());
+	public UserResponse addUser(UserRequest userRequest) throws GlAlreadyExistException, GlNotFoundException {
+		Optional<User> userSearch = userRepository.findByuserName(userRequest.getUserName());
 		if (userSearch.isPresent()) {
-			return null;
+			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
 		} else {
-			User us = User.builder().firstName(user.getFirstName()).lastName(user.getLastName())
-					.password(encoder.encode(user.getPassword())).language(user.getLanguage())
-					.userName(user.getUserName()).leads(new HashSet<>()).build();
-			Optional<Role> role = roleRepository.findById(user.getIdRole());
-			Optional<Team> team = teamRepository.findById(user.getIdTeam());
-			us.setRole(role.get());
-			us.setTeam(team.get());
+
+			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
+			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
+			if (role.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
+			}
+			if (team.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdTeam().toString(), Team.class.getSimpleName());
+			}
+			User us = User.builder().firstName(userRequest.getFirstName()).lastName(userRequest.getLastName())
+					.password(encoder.encode(userRequest.getPassword())).language(userRequest.getLanguage())
+					.userName(userRequest.getUserName()).leads(new HashSet<>()).role(role.get()).team(team.get())
+					.build();
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(us));
 		}
 	}
 
 	@Override
-	public void deleteUser(Long id) {
+	public void deleteUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 			userRepository.delete(userSearch.get());
 		}
-
 	}
 
 	@Override
-	public UserResponse updateUser(Long id, UserRequest user) {
+	public UserResponse updateUser(Long id, UserRequest userRequest) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 
-			userSearch.get().setFirstName(user.getFirstName());
-			userSearch.get().setLastName(user.getLastName());
-			userSearch.get().setPassword(encoder.encode(user.getPassword()));
-			userSearch.get().setUserName(user.getUserName());
-			userSearch.get().setLanguage(user.getLanguage());
+			userSearch.get().setFirstName(userRequest.getFirstName());
+			userSearch.get().setLastName(userRequest.getLastName());
+			userSearch.get().setPassword(encoder.encode(userRequest.getPassword()));
+			userSearch.get().setUserName(userRequest.getUserName());
+			userSearch.get().setLanguage(userRequest.getLanguage());
 
-			Optional<Role> role = roleRepository.findById(user.getIdRole());
-			Optional<Team> team = teamRepository.findById(user.getIdTeam());
+			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
+			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
 
-			if (role.isPresent()) {
-				userSearch.get().setRole(role.get());
+			if (role.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
 			}
-			if (team.isPresent()) {
-				userSearch.get().setTeam(team.get());
+			if (team.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdTeam().toString(), Team.class.getSimpleName());
 			}
-
+			userSearch.get().setRole(role.get());
+			userSearch.get().setTeam(team.get());
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
 		}
 	}
 
 	@Override
-	public UserResponse getUser(Long id) {
+	public UserResponse getUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
@@ -117,18 +126,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public void changeRole(Long userId, Long roleId) {
-
+	public void changeRole(Long userId, Long roleId) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(userId);
 		if (userSearch.isEmpty()) {
-
+			throw new GlNotFoundException(userId.toString(), User.class.getSimpleName());
 		} else {
 			Optional<Role> roleSearch = roleRepository.findById(roleId);
 			if (roleSearch.isEmpty()) {
-
+				throw new GlNotFoundException(roleId.toString(), Role.class.getSimpleName());
 			} else {
 				userSearch.get().setRole(roleSearch.get());
-				;
 				userRepository.save(userSearch.get());
 			}
 		}
@@ -151,10 +158,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public UserResponse getUser(String userName) {
+	public UserResponse getUser(String userName) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findByuserName(userName);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
