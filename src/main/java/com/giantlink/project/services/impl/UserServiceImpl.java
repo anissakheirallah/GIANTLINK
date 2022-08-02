@@ -2,12 +2,15 @@ package com.giantlink.project.services.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,11 +19,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Role;
+import com.giantlink.project.entities.Team;
 import com.giantlink.project.entities.User;
 import com.giantlink.project.mappers.UserMapper;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
+import com.giantlink.project.repositories.LeadRepository;
 import com.giantlink.project.repositories.RoleRepository;
+import com.giantlink.project.repositories.TeamRepository;
 import com.giantlink.project.repositories.UserRepository;
 import com.giantlink.project.services.UserService;
 
@@ -33,6 +39,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Autowired
 	RoleRepository roleRepository;
 
+	@Autowired
+	TeamRepository teamRepository;
+
+	@Autowired
+	LeadRepository leadRepository;
+
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Override
@@ -41,10 +53,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (userSearch.isPresent()) {
 			return null;
 		} else {
-			User us = User.builder().name(user.getName()).password(encoder.encode(user.getPassword()))
-					.userName(user.getUserName()).build();
+			User us = User.builder().firstName(user.getFirstName()).lastName(user.getLastName())
+					.password(encoder.encode(user.getPassword())).language(user.getLanguage())
+					.userName(user.getUserName()).leads(new HashSet<>()).build();
 			Optional<Role> role = roleRepository.findById(user.getIdRole());
+			Optional<Team> team = teamRepository.findById(user.getIdTeam());
 			us.setRole(role.get());
+			us.setTeam(team.get());
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(us));
 		}
 	}
@@ -65,12 +80,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (userSearch.isEmpty()) {
 			return null;
 		} else {
-			Set<Role> roleList = new HashSet<>();
-			userSearch.get().setName(user.getName());
-			userSearch.get().setPassword(user.getPassword());
+
+			userSearch.get().setFirstName(user.getFirstName());
+			userSearch.get().setLastName(user.getLastName());
+			userSearch.get().setPassword(encoder.encode(user.getPassword()));
 			userSearch.get().setUserName(user.getUserName());
+			userSearch.get().setLanguage(user.getLanguage());
+
 			Optional<Role> role = roleRepository.findById(user.getIdRole());
-			userSearch.get().setRole(role.get());
+			Optional<Team> team = teamRepository.findById(user.getIdTeam());
+
+			if (role.isPresent()) {
+				userSearch.get().setRole(role.get());
+			}
+			if (team.isPresent()) {
+				userSearch.get().setTeam(team.get());
+			}
 
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
 		}
@@ -133,6 +158,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
+	}
+
+	@Override
+	public Map<String, Object> getAllUsersPaginations(Pageable pageable) {
+		List<UserResponse> usersResponses = new ArrayList<>();
+		Page<User> users = userRepository.findAll(pageable);
+
+		users.getContent().forEach(user -> {
+			usersResponses.add(UserMapper.INSTANCE.mapEntity(user));
+		});
+
+		Map<String, Object> requestResponse = new HashMap<>();
+		requestResponse.put("content", usersResponses);
+		requestResponse.put("currentPage", users.getNumber());
+		requestResponse.put("totalElements", users.getTotalElements());
+		requestResponse.put("totalPages", users.getTotalPages());
+		return requestResponse;
 	}
 
 }

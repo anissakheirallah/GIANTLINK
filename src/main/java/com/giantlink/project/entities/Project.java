@@ -1,16 +1,13 @@
 package com.giantlink.project.entities;
 
-import java.util.Set;
+import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -20,29 +17,24 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "users")
+@Table(name = "teams")
 @Setter
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class User {
+public class Project {
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String firstName;
-	private String lastName;
-	private String userName;
-	private String password;
-	private String language;
+	private String projectName;
+	private String projectType;
+	private Date startDate;
+	private Date finishDate;
 
-	@ManyToOne
-	private Role role;
-	
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	private Set<Lead> leads;
 }

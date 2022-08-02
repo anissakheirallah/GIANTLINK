@@ -1,7 +1,5 @@
 package com.giantlink.project.models.responses;
 
-import java.util.Set;
-
 import lombok.Builder;
 import lombok.Data;
 
@@ -10,7 +8,7 @@ import lombok.Data;
 public class ClientResponse {
 
 	private Long id;
-	
+
 	private String firstName;
 	private String lastName;
 	private String adress;
@@ -18,7 +16,7 @@ public class ClientResponse {
 	private String email;
 	private String GSM;
 	private String CP;
-	
-	//private Set<LeadResponse> leads;
-	
+
+	// private Set<LeadResponse> leads;
+
 }
