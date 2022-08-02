@@ -32,7 +32,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
 		if (request.getServletPath().equals("/api/login")
-				|| request.getServletPath().equals("api/user/token/refresh")) {
+				|| request.getServletPath().equals("api/user/refreshtoken/**")) {
 			filterChain.doFilter(request, response);
 		} else {
 			String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
@@ -43,19 +43,24 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 					Algorithm algorithm = Algorithm.HMAC256("GiantLink_Vente".getBytes());
 					JWTVerifier jwtVerifier = JWT.require(algorithm).build();
 					DecodedJWT decodedJWT = jwtVerifier.verify(token);
+					// System.out.println("decoded" + decodedJWT);
 					String username = decodedJWT.getSubject();
+
 					String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
 					List<String> roleList = Arrays.asList(roles);
 					Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
 					roleList.forEach(role -> {
 						authorities.add(new SimpleGrantedAuthority(role));
 					});
+
 					UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
 							username, null, authorities);
 					SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 					filterChain.doFilter(request, response);
 				} catch (Exception e) {
 					response.setHeader("error", e.getMessage());
+					response.setStatus(403);
 					// response.sendError(403);
 
 					Map<String, String> error = new HashMap<>();

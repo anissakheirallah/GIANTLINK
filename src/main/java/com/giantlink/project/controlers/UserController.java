@@ -16,6 +16,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.util.MimeTypeUtils;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,16 +35,18 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.giantlink.project.entities.Role;
 import com.giantlink.project.entities.User;
 import com.giantlink.project.mappers.UserMapper;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
 import com.giantlink.project.services.UserService;
 
+import lombok.extern.slf4j.Slf4j;
+
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = { "http://localhost:4200" })
+@Slf4j
 public class UserController {
 
 	@Autowired
@@ -79,36 +85,42 @@ public class UserController {
 	}
 
 	@GetMapping("/refreshtoken")
-	public void refreashToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void refreashToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+			throws IOException {
 		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
 			try {
-
-				String token = authorizationHeader.substring("Bearer ".length());
+				String refresh_token = authorizationHeader.substring("Bearer ".length());
 				Algorithm algorithm = Algorithm.HMAC256("GiantLink_Vente".getBytes());
 				JWTVerifier jwtVerifier = JWT.require(algorithm).build();
-				DecodedJWT decodedJWT = jwtVerifier.verify(token);
+				DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
 				String username = decodedJWT.getSubject();
+
 				User user = UserMapper.INSTANCE.mapResponse(userService.getUser(username));
-				List<Role> roles = new ArrayList<>();
-				roles.add(user.getRole());
-				String refresh_token = JWT.create().withSubject(user.getUserName())
-						.withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+
+				List<GrantedAuthority> authorities = new ArrayList<>();
+
+				authorities.add(new SimpleGrantedAuthority("" + user.getRole().getName()));
+
+				String access_token = JWT.create().withSubject(user.getUserName())
+						.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
 						.withIssuer(request.getRequestURL().toString())
-						.withClaim("roles", roles.stream().map(Role::getName).collect(Collectors.toList()))
+						.withClaim("roles",
+								authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 						.sign(algorithm);
 
 				Map<String, String> tokens = new HashMap<>();
+				tokens.put("access_token", access_token);
 				tokens.put("refresh_token", refresh_token);
+
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 			} catch (Exception e) {
 				response.setHeader("error", e.getMessage());
-				// response.sendError(403);
-
+				response.setStatus(403);
 				Map<String, String> error = new HashMap<>();
 				error.put("error_message", e.getMessage());
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+				response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
 				new ObjectMapper().writeValue(response.getOutputStream(), error);
 			}
 		} else {

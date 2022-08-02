@@ -32,7 +32,7 @@ public class User {
 	private String name;
 	private String userName;
 	private String password;
-	
+
 	@ManyToOne
 	private Role role;
 	
@@ -40,9 +40,3 @@ public class User {
 	@OneToMany(mappedBy = "user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
 	private Set<Lead> leads;
 }
-
-
-
-
-
-
