@@ -27,13 +27,7 @@ public class User {
 	private String name;
 	private String userName;
 	private String password;
-	
+
 	@ManyToOne
 	private Role role;
 }
-
-
-
-
-
-

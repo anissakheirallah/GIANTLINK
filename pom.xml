@@ -15,7 +15,7 @@
 	<name>glintranet-vente</name>
 	<description>giantlink intranet ventre project</description>
 	<properties>
-		<java.version>17</java.version>
+		<java.version>11</java.version>
 		<version.mapstruct>1.4.2.Final</version.mapstruct>
 	</properties>
 	<dependencies>

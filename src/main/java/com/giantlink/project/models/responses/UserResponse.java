@@ -1,7 +1,5 @@
 package com.giantlink.project.models.responses;
 
-import java.util.Set;
-
 import com.giantlink.project.entities.Role;
 
 import lombok.Builder;
@@ -15,6 +13,6 @@ public class UserResponse {
 	private String name;
 	private String userName;
 	private String password;
-	
+
 	private Role role;
 }

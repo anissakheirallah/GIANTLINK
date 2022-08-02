@@ -23,11 +23,10 @@ import lombok.Setter;
 @Builder
 public class Role {
 	@Id
-	@GeneratedValue(strategy =GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@Enumerated(EnumType.STRING)
 	private ERole name;
-
 
 }
