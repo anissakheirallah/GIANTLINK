@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class ServiceRequest {
 
-	private String name;
-	private String userName;
-	private String password;
-	
-	private Long idRole;
+	private String serviceName;
+	private Float point;
+	private Long idProject;
+	private Boolean statut;
 }

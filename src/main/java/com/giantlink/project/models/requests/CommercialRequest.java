@@ -9,11 +9,11 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class CommercialRequest {
 
-	private String name;
-	private String userName;
-	private String password;
+	private String commercialName;
+	private Boolean statut;
+	private Long idCalendar;
 	
-	private Long idRole;
+	
 }

@@ -9,11 +9,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class ProductRequest {
 
-	private String name;
-	private String userName;
-	private String password;
+	private String productName;
+	private Long idProject;
 	
-	private Long idRole;
+	private Long lead_id;
 }

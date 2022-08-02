@@ -9,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserRequest {
+public class LeadRequest {
 
-	private String name;
-	private String userName;
-	private String password;
-	
-	private Long idRole;
+	private Long user_id;
+	private Long commercial_id;
+	private Long client_id;
 }
