@@ -43,14 +43,14 @@ public class Client {
 	private String CP;
 	private String city;
 	
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
-	private Date timestamp;
-	
 	
 	@OneToMany(mappedBy = "client",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
 	private Set<Lead> leads;
 	
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	private Date timestamp;
 	
 	@PrePersist
 	private void onCreate() {
