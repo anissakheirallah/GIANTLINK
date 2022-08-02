@@ -1,8 +1,10 @@
 package com.giantlink.project.entities;
 
+import java.util.Date;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,7 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrePersist;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,4 +50,14 @@ public class User {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Lead> leads;
+	
+	@Temporal(TemporalType.TIMESTAMP)
+	@Column(nullable = false)
+	private Date timestamp;
+	
+	@PrePersist
+	private void onCreate() {
+		this.timestamp = new Date();
+	}
+	
 }
