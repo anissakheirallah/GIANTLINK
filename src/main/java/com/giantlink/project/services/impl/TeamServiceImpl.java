@@ -103,7 +103,7 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public Map<String, Object> getAllTeamsPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(Pageable pageable) {
 		List<TeamResponse> teamResponses = new ArrayList<>();
 		Page<Team> teams = teamRepository.findAll(pageable);
 

@@ -60,9 +60,22 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public ProjectResponse updateProject(Long id, ProjectRequest Project) throws GlNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+	public ProjectResponse updateProject(Long id, ProjectRequest projectRequest) throws GlNotFoundException {
+		Optional<Project> projectSearch = projectRepository.findById(id);
+
+		if (projectSearch.isEmpty()) {
+			throw new GlNotFoundException(id.toString(), Project.class.getSimpleName());
+		}
+		Optional<Team> teamSearch = teamRepository.findById(projectRequest.getIdTeam());
+		if (teamSearch.isEmpty()) {
+			throw new GlNotFoundException(projectRequest.getIdTeam().toString(), Team.class.getSimpleName());
+		}
+		projectSearch.get().setProjectName(projectRequest.getProjectName());
+		projectSearch.get().setProjectType(projectRequest.getProjectType());
+		projectSearch.get().setTeam(teamSearch.get());
+		projectSearch.get().setStartDate(projectRequest.getStartDate());
+		projectSearch.get().setFinishDate(projectRequest.getFinishDate());
+		return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(projectSearch.get()));
 	}
 
 	@Override
@@ -81,7 +94,7 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Map<String, Object> getAllProjectsPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(Pageable pageable) {
 		List<ProjectResponse> projectResponses = new ArrayList<>();
 		Page<Project> projects = projectRepository.findAll(pageable);
 

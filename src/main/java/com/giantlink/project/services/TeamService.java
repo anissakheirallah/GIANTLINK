@@ -22,5 +22,5 @@ public interface TeamService {
 
 	List<TeamResponse> getTeams();
 
-	Map<String, Object> getAllTeamsPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(Pageable pageable);
 }

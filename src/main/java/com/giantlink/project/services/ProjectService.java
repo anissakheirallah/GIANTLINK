@@ -22,5 +22,5 @@ public interface ProjectService {
 
 	List<ProjectResponse> getProjects();
 
-	Map<String, Object> getAllProjectsPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(Pageable pageable);
 }

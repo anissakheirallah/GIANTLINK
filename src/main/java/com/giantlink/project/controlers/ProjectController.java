@@ -21,51 +21,49 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.models.requests.TeamRequest;
-import com.giantlink.project.models.responses.TeamResponse;
-import com.giantlink.project.services.TeamService;
+import com.giantlink.project.models.requests.ProjectRequest;
+import com.giantlink.project.models.responses.ProjectResponse;
+import com.giantlink.project.services.ProjectService;
 
 @RestController
-@RequestMapping("/api/team")
+@RequestMapping("/api/project")
 @CrossOrigin(origins = { "http://localhost:4200" })
-public class TeamController {
-
+public class ProjectController {
 	@Autowired
-	TeamService teamService;
+	ProjectService projectService;
 
 	@GetMapping
-	public ResponseEntity<List<TeamResponse>> getTeams() {
-		return new ResponseEntity<List<TeamResponse>>(teamService.getTeams(), HttpStatus.OK);
+	public ResponseEntity<List<ProjectResponse>> getprojects() {
+		return new ResponseEntity<List<ProjectResponse>>(projectService.getProjects(), HttpStatus.OK);
 	}
 
 	@PostMapping()
-	public ResponseEntity<TeamResponse> addTeam(@RequestBody TeamRequest TeamRequest)
+	public ResponseEntity<ProjectResponse> addproject(@RequestBody ProjectRequest projectRequest)
 			throws GlAlreadyExistException, GlNotFoundException {
-		return new ResponseEntity<TeamResponse>(teamService.addTeam(TeamRequest), HttpStatus.CREATED);
+		return new ResponseEntity<ProjectResponse>(projectService.addProject(projectRequest), HttpStatus.CREATED);
 	}
 
 	@GetMapping("/{id}")
-	public ResponseEntity<TeamResponse> getTeam(@PathVariable Long id) throws GlNotFoundException {
-		return new ResponseEntity<TeamResponse>(teamService.getTeam(id), HttpStatus.OK);
+	public ResponseEntity<ProjectResponse> getproject(@PathVariable Long id) throws GlNotFoundException {
+		return new ResponseEntity<ProjectResponse>(projectService.getProject(id), HttpStatus.OK);
 	}
 
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException {
-		teamService.deleteTeam(id);
+		projectService.deleteProject(id);
 		return new ResponseEntity<String>("deleted !", HttpStatus.OK);
 	}
 
 	@PutMapping("/{id}")
-	public ResponseEntity<TeamResponse> update(@PathVariable("id") Long id, @RequestBody TeamRequest TeamRequest)
-			throws GlNotFoundException {
-		return new ResponseEntity<TeamResponse>(teamService.updateTeam(id, TeamRequest), HttpStatus.OK);
+	public ResponseEntity<ProjectResponse> update(@PathVariable("id") Long id,
+			@RequestBody ProjectRequest projectRequest) throws GlNotFoundException {
+		return new ResponseEntity<ProjectResponse>(projectService.updateProject(id, projectRequest), HttpStatus.OK);
 	}
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(teamService.getAllPaginations(pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(projectService.getAllPaginations(pageable), HttpStatus.OK);
 	}
-
 }

@@ -24,7 +24,7 @@ public interface UserService {
 
 	List<UserResponse> getUsers();
 
-	Map<String, Object> getAllUsersPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(Pageable pageable);
 
 	void changeRole(Long userId, Long roleId) throws GlNotFoundException;
 }

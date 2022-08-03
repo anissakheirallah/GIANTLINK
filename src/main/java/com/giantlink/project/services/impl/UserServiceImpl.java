@@ -168,7 +168,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public Map<String, Object> getAllUsersPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(Pageable pageable) {
 		List<UserResponse> usersResponses = new ArrayList<>();
 		Page<User> users = userRepository.findAll(pageable);
 
