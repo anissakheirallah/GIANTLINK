@@ -43,7 +43,6 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 					Algorithm algorithm = Algorithm.HMAC256("GiantLink_Vente".getBytes());
 					JWTVerifier jwtVerifier = JWT.require(algorithm).build();
 					DecodedJWT decodedJWT = jwtVerifier.verify(token);
-					// System.out.println("decoded" + decodedJWT);
 					String username = decodedJWT.getSubject();
 
 					String[] roles = decodedJWT.getClaim("roles").asArray(String.class);

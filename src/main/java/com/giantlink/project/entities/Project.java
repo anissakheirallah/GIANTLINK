@@ -10,6 +10,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +19,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "teams")
+@Table(name = "projects")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -34,6 +36,7 @@ public class Project {
 	private Date finishDate;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 

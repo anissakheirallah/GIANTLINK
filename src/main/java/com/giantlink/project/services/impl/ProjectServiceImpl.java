@@ -42,9 +42,12 @@ public class ProjectServiceImpl implements ProjectService {
 			if (team.isEmpty()) {
 				throw new GlNotFoundException(projectRequest.getIdTeam().toString(), Team.class.getSimpleName());
 			}
+
 			Project project = Project.builder().projectName(projectRequest.getProjectName())
 					.projectType(projectRequest.getProjectType()).team(team.get())
 					.startDate(projectRequest.getStartDate()).finishDate(projectRequest.getFinishDate()).build();
+
+			//Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
 			return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(project));
 		}
 	}

@@ -1,5 +1,7 @@
 package com.giantlink.project.entities;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -26,10 +28,10 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String teamName;
-	
-	@OneToMany(mappedBy="team")
-	private User sup;
-	
-	@OneToMany(mappedBy="team")
-	private Project project;
+
+	@OneToMany(mappedBy = "team")
+	private Set<User> sups;
+
+	@OneToMany(mappedBy = "team")
+	private Set<Project> projects;
 }

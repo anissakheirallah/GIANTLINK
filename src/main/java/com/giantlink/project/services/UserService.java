@@ -1,9 +1,14 @@
 package com.giantlink.project.services;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
 
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
@@ -27,4 +32,6 @@ public interface UserService {
 	Map<String, Object> getAllPaginations(Pageable pageable);
 
 	void changeRole(Long userId, Long roleId) throws GlNotFoundException;
+	
+	void refreshToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
 }

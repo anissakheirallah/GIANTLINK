@@ -1,5 +1,7 @@
 package com.giantlink.project.models.responses;
 
+import java.util.Set;
+
 import lombok.Builder;
 import lombok.Data;
 
@@ -9,8 +11,8 @@ public class TeamResponse {
 
 	private Long id;
 	private String teamName;
-	
-	private UserResponse sup;
-	
-	private ProjectResponse project;
+
+	private Set<UserResponse> sups;
+
+	private Set<ProjectResponse> projects;
 }

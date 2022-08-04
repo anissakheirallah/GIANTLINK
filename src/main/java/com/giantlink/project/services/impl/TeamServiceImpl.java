@@ -2,9 +2,11 @@ package com.giantlink.project.services.impl;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -42,17 +44,26 @@ public class TeamServiceImpl implements TeamService {
 		if (teamSearch.isEmpty()) {
 			throw new GlAlreadyExistException(teamRequest.getTeamName(), Team.class.getSimpleName());
 		}
-		Optional<User> userSearch = userRepository.findById(teamRequest.getIdSup());
-		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
-		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(teamRequest.getIdSup().toString(), User.class.getSimpleName());
+		Set<User> users = new HashSet<>();
+		for (Long idSup : teamRequest.getIdsSup()) {
+			Optional<User> userSearch = userRepository.findById(idSup);
+			if (userSearch.isEmpty()) {
+				throw new GlNotFoundException(idSup.toString(), User.class.getSimpleName());
+			} else {
+				users.add(userSearch.get());
+			}
 		}
-		if (projectSearch.isEmpty()) {
-			throw new GlNotFoundException(teamRequest.getIdProject().toString(), Project.class.getSimpleName());
+		Set<Project> projects = new HashSet<>();
+		for (Long idProject : teamRequest.getIdsProject()) {
+			Optional<Project> projectSearch = projectRepository.findById(idProject);
+			if (projectSearch.isEmpty()) {
+				throw new GlNotFoundException(idProject.toString(), Project.class.getSimpleName());
+			} else {
+				projects.add(projectSearch.get());
+			}
 		}
 
-		Team team = Team.builder().teamName(teamRequest.getTeamName()).sup(userSearch.get())
-				.project(projectSearch.get()).build();
+		Team team = Team.builder().teamName(teamRequest.getTeamName()).sups(users).projects(projects).build();
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
 	}
 
@@ -72,17 +83,26 @@ public class TeamServiceImpl implements TeamService {
 		if (teamSearch.isEmpty()) {
 			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
 		}
-
-		Optional<Project> projectSearch = projectRepository.findById(id);
-		Optional<User> userSearch = userRepository.findById(id);
-		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(teamRequest.getIdSup().toString(), User.class.getSimpleName());
+		Set<User> users = new HashSet<>();
+		for (Long idSup : teamRequest.getIdsSup()) {
+			Optional<User> userSearch = userRepository.findById(idSup);
+			if (userSearch.isEmpty()) {
+				throw new GlNotFoundException(idSup.toString(), User.class.getSimpleName());
+			} else {
+				users.add(userSearch.get());
+			}
 		}
-		if (projectSearch.isEmpty()) {
-			throw new GlNotFoundException(teamRequest.getIdProject().toString(), Project.class.getSimpleName());
+		Set<Project> projects = new HashSet<>();
+		for (Long idProject : teamRequest.getIdsProject()) {
+			Optional<Project> projectSearch = projectRepository.findById(idProject);
+			if (projectSearch.isEmpty()) {
+				throw new GlNotFoundException(idProject.toString(), Project.class.getSimpleName());
+			} else {
+				projects.add(projectSearch.get());
+			}
 		}
-		teamSearch.get().setProject(projectSearch.get());
-		teamSearch.get().setSup(userSearch.get());
+		teamSearch.get().setProjects(projects);
+		teamSearch.get().setSups(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(teamSearch.get()));
 	}

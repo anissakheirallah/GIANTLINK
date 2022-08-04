@@ -1,5 +1,7 @@
 package com.giantlink.project.models.requests;
 
+import java.util.Set;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +15,7 @@ public class TeamRequest {
 
 	private String teamName;
 
-	private Long idSup;
+	private Set<Long> idsSup;
 
-	private Long idProject;
+	private Set<Long> idsProject;
 }
