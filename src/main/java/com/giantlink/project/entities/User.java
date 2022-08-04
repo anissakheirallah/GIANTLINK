@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -34,15 +35,21 @@ public class User {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String name;
+	private String firstName;
+	private String lastName;
 	private String userName;
 	private String password;
+	private String language;
 
 	@ManyToOne
+	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 	
-	
-	@OneToMany(mappedBy = "user",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+	@ManyToOne
+	@JoinColumn(name = "team_id", nullable = false)
+	private Team team;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Lead> leads;
 	
 	@Temporal(TemporalType.TIMESTAMP)

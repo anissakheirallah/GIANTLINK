@@ -1,26 +1,49 @@
 package com.giantlink.project.services.impl;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.MimeTypeUtils;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.giantlink.project.entities.Role;
+import com.giantlink.project.entities.Team;
 import com.giantlink.project.entities.User;
+import com.giantlink.project.exceptions.GlAlreadyExistException;
+import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.UserMapper;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
+import com.giantlink.project.repositories.LeadRepository;
 import com.giantlink.project.repositories.RoleRepository;
+import com.giantlink.project.repositories.TeamRepository;
 import com.giantlink.project.repositories.UserRepository;
 import com.giantlink.project.services.UserService;
 
@@ -33,54 +56,89 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	@Autowired
 	RoleRepository roleRepository;
 
+	@Autowired
+	TeamRepository teamRepository;
+
+	@Autowired
+	LeadRepository leadRepository;
+
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
 	@Override
-	public UserResponse addUser(UserRequest user) {
-		Optional<User> userSearch = userRepository.findByuserName(user.getUserName());
+	public UserResponse addUser(UserRequest userRequest) throws GlAlreadyExistException, GlNotFoundException {
+		Optional<User> userSearch = userRepository.findByuserName(userRequest.getUserName());
 		if (userSearch.isPresent()) {
-			return null;
+			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
 		} else {
-			User us = User.builder().name(user.getName()).password(encoder.encode(user.getPassword()))
-					.userName(user.getUserName()).build();
-			Optional<Role> role = roleRepository.findById(user.getIdRole());
+
+			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
+			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
+			if (role.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
+			}
+			System.out.println(userRequest);
+			User us = UserMapper.INSTANCE.mapRequest(userRequest);
+			
+			us.setPassword(encoder.encode(userRequest.getPassword()));
+			us.setTeam(team.get());
 			us.setRole(role.get());
+			/*User us = User.builder().firstName(userRequest.getFirstName()).lastName(userRequest.getLastName())
+					.password(encoder.encode(userRequest.getPassword())).language(userRequest.getLanguage())
+					.userName(userRequest.getUserName()).leads(new HashSet<>()).role(role.get()).team(team.get())
+					.build();
+			if (team.isPresent()) { // throw new
+				GlNotFoundException(userRequest.getIdTeam().toString(), //
+						Team.class.getSimpleName());
+				
+			}*/
+
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(us));
 		}
 	}
 
 	@Override
-	public void deleteUser(Long id) {
+	public void deleteUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 			userRepository.delete(userSearch.get());
 		}
-
 	}
 
 	@Override
-	public UserResponse updateUser(Long id, UserRequest user) {
+	public UserResponse updateUser(Long id, UserRequest userRequest) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
-			Set<Role> roleList = new HashSet<>();
-			userSearch.get().setName(user.getName());
-			userSearch.get().setPassword(user.getPassword());
-			userSearch.get().setUserName(user.getUserName());
-			Optional<Role> role = roleRepository.findById(user.getIdRole());
-			userSearch.get().setRole(role.get());
 
+			userSearch.get().setFirstName(userRequest.getFirstName());
+			userSearch.get().setLastName(userRequest.getLastName());
+			userSearch.get().setPassword(encoder.encode(userRequest.getPassword()));
+			userSearch.get().setUserName(userRequest.getUserName());
+			userSearch.get().setLanguage(userRequest.getLanguage());
+
+			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
+			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
+
+			if (role.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
+			}
+			if (team.isEmpty()) {
+				throw new GlNotFoundException(userRequest.getIdTeam().toString(), Team.class.getSimpleName());
+			}
+			userSearch.get().setRole(role.get());
+			userSearch.get().setTeam(team.get());
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
 		}
 	}
 
 	@Override
-	public UserResponse getUser(Long id) {
+	public UserResponse getUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
@@ -92,18 +150,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public void changeRole(Long userId, Long roleId) {
-
+	public void changeRole(Long userId, Long roleId) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(userId);
 		if (userSearch.isEmpty()) {
-
+			throw new GlNotFoundException(userId.toString(), User.class.getSimpleName());
 		} else {
 			Optional<Role> roleSearch = roleRepository.findById(roleId);
 			if (roleSearch.isEmpty()) {
-
+				throw new GlNotFoundException(roleId.toString(), Role.class.getSimpleName());
 			} else {
 				userSearch.get().setRole(roleSearch.get());
-				;
 				userRepository.save(userSearch.get());
 			}
 		}
@@ -126,12 +182,80 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public UserResponse getUser(String userName) {
+	public UserResponse getUser(String userName) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findByuserName(userName);
 		if (userSearch.isEmpty()) {
-			return null;
+			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {
-			return UserMapper.INSTANCE.mapEntity(userSearch.get());
+			UserResponse userResponse = UserResponse.builder().firstName(userSearch.get().getFirstName())
+					.lastName(userSearch.get().getLastName()).language(userSearch.get().getLanguage())
+					.password(userSearch.get().getPassword()).role(userSearch.get().getRole())
+					.userName(userSearch.get().getUserName()).build();
+			return userResponse;
+			// UserMapper.INSTANCE.mapEntity(userSearch.get())
+		}
+	}
+
+	@Override
+	public Map<String, Object> getAllPaginations(Pageable pageable) {
+		List<UserResponse> usersResponses = new ArrayList<>();
+		Page<User> users = userRepository.findAll(pageable);
+
+		users.getContent().forEach(user -> {
+			usersResponses.add(UserMapper.INSTANCE.mapEntity(user));
+		});
+
+		Map<String, Object> requestResponse = new HashMap<>();
+		requestResponse.put("content", usersResponses);
+		requestResponse.put("currentPage", users.getNumber());
+		requestResponse.put("totalElements", users.getTotalElements());
+		requestResponse.put("totalPages", users.getTotalPages());
+		return requestResponse;
+	}
+
+	@Override
+	public void refreshToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+			throws IOException {
+		String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+		if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+			try {
+
+				String refresh_token = authorizationHeader.substring("Bearer ".length());
+				Algorithm algorithm = Algorithm.HMAC256("GiantLink_Vente".getBytes());
+				JWTVerifier jwtVerifier = JWT.require(algorithm).build();
+				DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
+				String username = decodedJWT.getSubject();
+				User user = UserMapper.INSTANCE.mapResponse(getUser(username));
+				// System.out.println();
+
+				List<GrantedAuthority> authorities = new ArrayList<>();
+
+				authorities.add(new SimpleGrantedAuthority(user.getRole().getName().toString()));
+
+				String access_token = JWT.create().withSubject(user.getUserName())
+						.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+						.withIssuer(request.getRequestURL().toString())
+						.withClaim("roles",
+								authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+						.sign(algorithm);
+
+				Map<String, String> tokens = new HashMap<>();
+				tokens.put("access_token", access_token);
+				tokens.put("refresh_token", refresh_token);
+
+				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+			} catch (Exception e) {
+				System.out.println("hana");
+				response.setHeader("error", e.getMessage());
+				response.setStatus(403);
+				Map<String, String> error = new HashMap<>();
+				error.put("error_message", e.getMessage());
+				response.setContentType(MimeTypeUtils.APPLICATION_JSON_VALUE);
+				new ObjectMapper().writeValue(response.getOutputStream(), error);
+			}
+		} else {
+			throw new RuntimeException("Refresh token not valid");
 		}
 	}
 

@@ -17,9 +17,9 @@ public interface ClientMapper {
 	ClientMapper INSTANCE = Mappers.getMapper(ClientMapper.class);
 
 	List<ClientResponse> mapClient(List<Client> clients);
-	
+
 	Set<ClientResponse> mapClient(Set<Client> clients);
-	
+
 	Client requestToEntity(ClientRequest clientRequest);
 
 	ClientResponse entityToResponse(Client client);
