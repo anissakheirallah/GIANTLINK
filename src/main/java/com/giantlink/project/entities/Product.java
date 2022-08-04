@@ -37,7 +37,7 @@ public class Product {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String productName;
-	private Long idProject;
+	//private Long idProject;
 	
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)

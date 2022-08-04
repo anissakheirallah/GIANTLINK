@@ -14,5 +14,5 @@ public class OptionRequest {
 	private String optionName;
 	private Long idProject;
 	
-	private Long lead_id;
+	
 }

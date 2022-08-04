@@ -50,10 +50,11 @@ public class Lead {
 	@JsonBackReference
 	private Commercial commercial;
 	
+	/*
 	@OneToMany(mappedBy = "lead",fetch=FetchType.EAGER)
 	private Set<Option> options; 
 	//private String options; 
-	
+	*/
 	
 	@OneToMany(mappedBy = "lead",fetch=FetchType.EAGER)
 	private Set<Product> products; 

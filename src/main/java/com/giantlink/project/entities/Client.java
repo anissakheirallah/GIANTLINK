@@ -39,8 +39,8 @@ public class Client {
 	private String adress;
 	private String tele;
 	private String email;
-	private String GSM;
-	private String CP;
+	private String gsm;
+	private String cp;
 	private String city;
 	
 	

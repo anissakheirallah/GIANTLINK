@@ -36,15 +36,21 @@ public class Option {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String optionName;
-	private Long idProject;
 	
+	/*
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "project_id", nullable = false)
+	@JsonBackReference
+	private Project project;
+	*/
 	
+	/*
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "lead_id", nullable = false)
 	@JsonBackReference
 	private Lead lead;
 	
-	
+	*/
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
