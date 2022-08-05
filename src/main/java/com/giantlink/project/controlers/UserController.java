@@ -43,7 +43,7 @@ public class UserController {
 		return new ResponseEntity<List<UserResponse>>(userService.getUsers(), HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/", consumes = {"*/*"})
+	@PostMapping
 	public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest)
 			throws GlAlreadyExistException, GlNotFoundException {
 		return new ResponseEntity<UserResponse>(userService.addUser(userRequest), HttpStatus.CREATED);
