@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -43,22 +46,25 @@ public class User {
 
 	@ManyToOne
 	@JoinColumn(name = "role_id", nullable = false)
+	@JsonBackReference
 	private Role role;
-	
+
 	@ManyToOne
 	@JoinColumn(name = "team_id", nullable = false)
+	@JsonBackReference
 	private Team team;
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private Set<Lead> leads;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-	
+
 	@PrePersist
 	private void onCreate() {
 		this.timestamp = new Date();
 	}
-	
+
 }

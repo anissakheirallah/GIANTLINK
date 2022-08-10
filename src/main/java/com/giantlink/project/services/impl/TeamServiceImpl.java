@@ -119,7 +119,7 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public List<TeamResponse> getTeams() {
-		return TeamMapper.INSTANCE.mapResponses(teamRepository.findAll());
+		return TeamMapper.INSTANCE.mapEntities(teamRepository.findAll());
 	}
 
 	@Override

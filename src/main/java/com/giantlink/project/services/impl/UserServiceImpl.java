@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponse addUser(UserRequest userRequest) throws GlAlreadyExistException, GlNotFoundException {
+		System.out.println(userRequest);
 		Optional<User> userSearch = userRepository.findByuserName(userRequest.getUserName());
 		if (userSearch.isPresent()) {
 			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
@@ -76,7 +77,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			if (role.isEmpty()) {
 				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
 			}
-			System.out.println(userRequest);
+
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
 			
 			us.setPassword(encoder.encode(userRequest.getPassword()));

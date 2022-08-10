@@ -8,6 +8,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
+import com.giantlink.project.repositories.ProjectRepository;
+import com.giantlink.project.services.ProjectService;
 import com.giantlink.project.services.TeamService;
 import com.giantlink.project.services.UserService;
 
@@ -19,6 +21,12 @@ public class GlVenteApplication implements CommandLineRunner {
 
 	@Autowired
 	TeamService teamService;
+
+	@Autowired
+	ProjectService projectService;
+
+	@Autowired
+	ProjectRepository projectRepository;
 
 	BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
@@ -34,6 +42,8 @@ public class GlVenteApplication implements CommandLineRunner {
 	@Override
 	public void run(String... args) throws Exception {
 		System.out.println("Bienvenue dans le portail de vente");
+		System.out.println(projectRepository.findById(6l).get().toString());
+		//System.out.println(projectRepository.findAll());
 
 		/*
 		 * UserRequest us =

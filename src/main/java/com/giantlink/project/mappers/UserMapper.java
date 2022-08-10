@@ -11,7 +11,7 @@ import com.giantlink.project.entities.User;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring")
 public interface UserMapper {
 
 	UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);

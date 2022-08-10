@@ -3,11 +3,14 @@ package com.giantlink.project.entities;
 import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,9 +32,11 @@ public class Team {
 	private Long id;
 	private String teamName;
 
-	@OneToMany(mappedBy = "team")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+	@JsonManagedReference
 	private Set<User> sups;
 
-	@OneToMany(mappedBy = "team")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+	@JsonManagedReference
 	private Set<Project> projects;
 }
