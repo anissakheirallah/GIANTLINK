@@ -7,6 +7,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -32,9 +33,10 @@ public class Team {
 	private Long id;
 	private String teamName;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
-	@JsonManagedReference
-	private Set<User> sups;
+//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
+//	@JsonManagedReference
+	@ManyToMany(mappedBy = "teams")
+	private Set<User> team_user;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
 	@JsonManagedReference

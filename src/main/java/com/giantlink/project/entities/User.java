@@ -11,6 +11,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
@@ -45,16 +47,18 @@ public class User {
 	private String language;
 
 	@ManyToOne
-	@JoinColumn(name = "role_id", nullable = false)
 	@JsonBackReference
+	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-	@ManyToOne
-	@JoinColumn(name = "team_id", nullable = false)
-	@JsonBackReference
-	private Team team;
+//	@ManyToOne
+//	@JsonBackReference
+//	@JoinColumn(name = "team_id", nullable = false)
+	@ManyToMany
+	@JoinTable(name = "team_supp", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+	private Set<Team> teams;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
 	@JsonManagedReference
 	private Set<Lead> leads;
 

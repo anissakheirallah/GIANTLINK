@@ -2,8 +2,6 @@ package com.giantlink.project.models.responses;
 
 import java.util.Date;
 
-import com.giantlink.project.entities.Team;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,5 +19,5 @@ public class ProjectResponse {
 	private Date startDate;
 	private Date finishDate;
 
-	private Team team;
+	private TeamResponse team;
 }

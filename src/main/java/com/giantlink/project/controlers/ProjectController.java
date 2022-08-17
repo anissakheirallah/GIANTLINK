@@ -32,7 +32,7 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectService;
 
-	@GetMapping("/teams")
+	@GetMapping("/all")
 	public ResponseEntity<List<ProjectResponse>> getprojects() {
 		return new ResponseEntity<List<ProjectResponse>>(projectService.getProjects(), HttpStatus.OK);
 	}

@@ -11,27 +11,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.giantlink.project.entities.Client;
 import com.giantlink.project.entities.Option;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.mappers.ClientMapper;
 import com.giantlink.project.mappers.OptionMapper;
 import com.giantlink.project.models.requests.OptionRequest;
-import com.giantlink.project.models.responses.ClientResponse;
 import com.giantlink.project.models.responses.OptionResponse;
 import com.giantlink.project.repositories.OptionRepository;
 import com.giantlink.project.services.OptionService;
 
 @Service
 public class OptionServiceImpl implements OptionService {
-	
+
 	@Autowired
 	private OptionRepository optionRepository;
 
 	@Override
 	public OptionResponse add(OptionRequest optionRequest) throws GlAlreadyExistException, GlNotFoundException {
-		
+
 		Optional<Option> findOption = optionRepository.findByOptionName(optionRequest.getOptionName());
 
 		if (findOption.isPresent()) {
@@ -44,14 +41,14 @@ public class OptionServiceImpl implements OptionService {
 
 	@Override
 	public List<OptionResponse> getAll() {
-		
+
 		return OptionMapper.INSTANCE.mapOption(optionRepository.findAll());
 
 	}
 
 	@Override
 	public OptionResponse get(Long id) throws GlNotFoundException {
-		
+
 		Optional<Option> findOption = optionRepository.findById(id);
 
 		if (!findOption.isPresent()) {
@@ -63,30 +60,29 @@ public class OptionServiceImpl implements OptionService {
 
 	@Override
 	public void delete(Long id) throws GlNotFoundException {
-		
-		Optional<Option> findOption = optionRepository.findById(id);
 
-		if (!findOption.isPresent()) {
-			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
-		} 
-		
-		optionRepository.deleteById(id);
-		
-	}
-
-	@Override
-	public OptionResponse update(Long id, OptionRequest optionRequest) throws GlNotFoundException {
-		
 		Optional<Option> findOption = optionRepository.findById(id);
 
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-		
+
+		optionRepository.deleteById(id);
+
+	}
+
+	@Override
+	public OptionResponse update(Long id, OptionRequest optionRequest) throws GlNotFoundException {
+
+		Optional<Option> findOption = optionRepository.findById(id);
+
+		if (!findOption.isPresent()) {
+			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
+		}
+
 		Option option = optionRepository.findById(id).get();
 
 		option.setOptionName(optionRequest.getOptionName());
-		
 
 		optionRepository.save(option);
 
@@ -95,16 +91,15 @@ public class OptionServiceImpl implements OptionService {
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
-		
+
 		List<OptionResponse> optionList = new ArrayList<>();
 		Page<Option> options = (name.isBlank()) ? optionRepository.findAll(pageable)
 				: optionRepository.findByOptionNameContainingIgnoreCase(name, pageable);
 		options.getContent().forEach(option -> {
-			OptionResponse response = OptionResponse.builder().id(option.getId())
-					.optionName(option.getOptionName())
-					
+			OptionResponse response = OptionResponse.builder().id(option.getId()).optionName(option.getOptionName())
+
 					.build();
-			
+
 			optionList.add(response);
 		});
 		Map<String, Object> optionMap = new HashMap<>();
@@ -114,7 +109,7 @@ public class OptionServiceImpl implements OptionService {
 		optionMap.put("totalPages", options.getTotalPages());
 
 		return optionMap;
-		
+
 	}
 
 }

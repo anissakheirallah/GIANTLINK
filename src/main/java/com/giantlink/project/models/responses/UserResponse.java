@@ -2,9 +2,7 @@ package com.giantlink.project.models.responses;
 
 import java.util.Set;
 
-import com.giantlink.project.entities.Lead;
 import com.giantlink.project.entities.Role;
-import com.giantlink.project.entities.Team;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,7 +23,7 @@ public class UserResponse {
 	private String language;
 
 	private Role role;
-	private Team team;
+	private Set<TeamResponse> team;
 
-	private Set<Lead> leads;
+	private Set<LeadResponse> leads;
 }

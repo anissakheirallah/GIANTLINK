@@ -3,7 +3,6 @@ package com.giantlink.project.mappers;
 import java.util.List;
 import java.util.Set;
 
-import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 

@@ -8,15 +8,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.giantlink.project.entities.Client;
 import com.giantlink.project.entities.Lead;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.mappers.ClientMapper;
 import com.giantlink.project.mappers.LeadMapper;
 import com.giantlink.project.models.requests.LeadRequest;
 import com.giantlink.project.models.responses.LeadResponse;
-import com.giantlink.project.repositories.ClientRepository;
 import com.giantlink.project.repositories.LeadRepository;
 import com.giantlink.project.services.LeadService;
 
@@ -26,11 +23,9 @@ public class LeadServiceImpl implements LeadService {
 	@Autowired
 	private LeadRepository leadRepository;
 
-	
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
-		
-		
+
 		return LeadMapper.INSTANCE
 				.entityToResponse(leadRepository.save(LeadMapper.INSTANCE.requestToEntity(leadRequest)));
 
@@ -38,13 +33,13 @@ public class LeadServiceImpl implements LeadService {
 
 	@Override
 	public List<LeadResponse> getAll() {
-		
-		return LeadMapper.INSTANCE.mapLead(leadRepository.findAll()); 
+
+		return LeadMapper.INSTANCE.mapLead(leadRepository.findAll());
 	}
 
 	@Override
 	public LeadResponse get(Long id) throws GlNotFoundException {
-		
+
 		Optional<Lead> findLead = leadRepository.findById(id);
 
 		if (!findLead.isPresent()) {
@@ -52,20 +47,20 @@ public class LeadServiceImpl implements LeadService {
 		}
 
 		return LeadMapper.INSTANCE.entityToResponse(leadRepository.findById(id).get());
-		
+
 	}
 
 	@Override
 	public void delete(Long id) throws GlNotFoundException {
-		
+
 		Optional<Lead> findLead = leadRepository.findById(id);
 
 		if (!findLead.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Lead.class.getSimpleName());
-		} 
-		
+		}
+
 		leadRepository.deleteById(id);
-		
+
 	}
 
 	@Override

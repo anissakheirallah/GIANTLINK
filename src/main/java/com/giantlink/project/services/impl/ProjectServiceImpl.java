@@ -40,14 +40,19 @@ public class ProjectServiceImpl implements ProjectService {
 		} else {
 			Optional<Team> team = teamRepository.findById(projectRequest.getIdTeam());
 			if (team.isEmpty()) {
-				throw new GlNotFoundException(projectRequest.getIdTeam().toString(), Team.class.getSimpleName());
+				throw new GlNotFoundException(projectRequest.getProjectName(), Team.class.getSimpleName());
 			}
 
-			Project project = Project.builder().projectName(projectRequest.getProjectName())
-					.projectType(projectRequest.getProjectType()).team(team.get())
-					.startDate(projectRequest.getStartDate()).finishDate(projectRequest.getFinishDate()).build();
+			/*
+			 * Project project =
+			 * Project.builder().projectName(projectRequest.getProjectName())
+			 * .projectType(projectRequest.getProjectType()).team(team.get())
+			 * .startDate(projectRequest.getStartDate()).finishDate(projectRequest.
+			 * getFinishDate()).build();
+			 */
 
-			//Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
+			Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
+			project.setTeam(team.get());
 			return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(project));
 		}
 	}
