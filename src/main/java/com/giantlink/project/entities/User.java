@@ -55,7 +55,7 @@ public class User {
 //	@JsonBackReference
 //	@JoinColumn(name = "team_id", nullable = false)
 	@ManyToMany
-	@JoinTable(name = "team_supp", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+	@JoinTable(name = "team_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
 	private Set<Team> teams;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)

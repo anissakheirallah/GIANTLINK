@@ -65,7 +65,7 @@ public class TeamServiceImpl implements TeamService {
 			}
 		}
 
-		Team team = Team.builder().teamName(teamRequest.getTeamName()).team_user(users).projects(projects).build();
+		Team team = Team.builder().teamName(teamRequest.getTeamName()).team_users(users).projects(projects).build();
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
 	}
 
@@ -104,7 +104,7 @@ public class TeamServiceImpl implements TeamService {
 			}
 		}
 		teamSearch.get().setProjects(projects);
-		teamSearch.get().setTeam_user(users);
+		teamSearch.get().setTeam_users(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(teamSearch.get()));
 	}

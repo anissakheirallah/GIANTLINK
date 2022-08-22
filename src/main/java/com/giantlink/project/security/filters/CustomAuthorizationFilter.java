@@ -1,4 +1,4 @@
-package com.giantlink.project.filter;
+package com.giantlink.project.security.filters;
 
 import java.io.IOException;
 import java.util.ArrayList;

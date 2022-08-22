@@ -5,30 +5,37 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.giantlink.project.filter.CustomAuthFilter;
-import com.giantlink.project.filter.CustomAuthorizationFilter;
+import com.giantlink.project.security.filters.CustomAuthFilter;
+import com.giantlink.project.security.filters.CustomAuthorizationFilter;
 
 import lombok.RequiredArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 @RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	private final UserDetailsService userDetailsService;
-	private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
+	@Bean
+	public PasswordEncoder bCryptPasswordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
 	@Override
 	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder);
+		auth.userDetailsService(userDetailsService).passwordEncoder(bCryptPasswordEncoder());
 	}
 
 	@Override
@@ -37,10 +44,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		authFilter.setFilterProcessesUrl("/api/login");
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests().antMatchers("api/login/**", "api/user/refreshtoken/**", "/api/user/**").permitAll();
-		//http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/user/**").hasAnyAuthority("ROLE_RESPONSABLE","ROLE_ADMIN");
-		//http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/user/**").hasAnyAuthority("ROLE_ADMIN");
-		//http.authorizeRequests().anyRequest().authenticated();
+		http.authorizeRequests()
+				.antMatchers("api/login/**", "api/user/refreshtoken/**")
+				.permitAll();//, "api/user/**", "api/team/**", "api/user/**"
+
+//		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(authFilter);
 		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

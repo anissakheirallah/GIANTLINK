@@ -33,12 +33,10 @@ public class Team {
 	private Long id;
 	private String teamName;
 
-//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
-//	@JsonManagedReference
 	@ManyToMany(mappedBy = "teams")
-	private Set<User> team_user;
+	private Set<User> team_users;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
 	@JsonManagedReference
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "team")
 	private Set<Project> projects;
 }

@@ -8,15 +8,15 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class TeamResponse {
 
 	private Long id;
 	private String teamName;
 
-	private Set<UserResponse> sups;
+	private Set<UserResponse> team_users;
 
 	private Set<ProjectResponse> projects;
 }

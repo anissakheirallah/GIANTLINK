@@ -3,6 +3,7 @@ package com.giantlink.project.entities;
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,8 +36,8 @@ public class Project {
 	private Date startDate;
 	private Date finishDate;
 
-	@ManyToOne
 	@JsonBackReference
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "team_id", nullable = false)
 	private Team team;
 

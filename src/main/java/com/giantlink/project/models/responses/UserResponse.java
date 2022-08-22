@@ -23,7 +23,7 @@ public class UserResponse {
 	private String language;
 
 	private Role role;
-	private Set<TeamResponse> team;
+	private Set<TeamResponse> teams;
 
 	private Set<LeadResponse> leads;
 }
