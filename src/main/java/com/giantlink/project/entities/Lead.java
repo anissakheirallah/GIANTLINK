@@ -35,51 +35,46 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Lead {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	
+
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id", nullable = false)
 	@JsonBackReference
 	private User user;
-	
+
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "commercial_id", nullable = false)
 	@JsonBackReference
 	private Commercial commercial;
-	
+
 	/*
-	@OneToMany(mappedBy = "lead",fetch=FetchType.EAGER)
-	private Set<Option> options; 
-	//private String options; 
-	*/
-	
-	@OneToMany(mappedBy = "lead",fetch=FetchType.EAGER)
-	private Set<Product> products; 
-	
+	 * @OneToMany(mappedBy = "lead",fetch=FetchType.EAGER) private Set<Option>
+	 * options; //private String options;
+	 */
+
+	@OneToMany(mappedBy = "lead", fetch = FetchType.EAGER)
+	private Set<Product> products;
+
 	@ManyToMany(mappedBy = "leads", cascade = CascadeType.ALL)
 	@JsonBackReference
 	private Set<Service> Services;
-	//private String Services;
-	
+	// private String Services;
+
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "client_id", nullable = false)
 	@JsonBackReference
 	private Client client;
-	
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-	
+
 	@PrePersist
 	private void onCreate() {
 		this.timestamp = new Date();
 	}
-	
-
-	
 
 }

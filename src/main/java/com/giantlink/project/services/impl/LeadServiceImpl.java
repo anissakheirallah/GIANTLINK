@@ -25,7 +25,12 @@ public class LeadServiceImpl implements LeadService {
 
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
-
+		//check appel
+		//check client
+		//check commercial
+		//check service
+		//check product
+		//check option
 		return LeadMapper.INSTANCE
 				.entityToResponse(leadRepository.save(LeadMapper.INSTANCE.requestToEntity(leadRequest)));
 

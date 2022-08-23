@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.data.domain.Pageable;
 
+import com.giantlink.project.entities.Project;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.models.requests.ProjectRequest;
@@ -20,7 +21,9 @@ public interface ProjectService {
 
 	ProjectResponse getProject(Long id) throws GlNotFoundException;
 
-	List<ProjectResponse> getProjects();
+	List<Project> getProjects();
+	
+	List<ProjectResponse> getProjectsResponses();
 
 	Map<String, Object> getAllPaginations(Pageable pageable);
 }

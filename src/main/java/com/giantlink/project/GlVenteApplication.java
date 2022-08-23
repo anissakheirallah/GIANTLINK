@@ -39,8 +39,10 @@ public class GlVenteApplication implements CommandLineRunner {
 		 */
 		// System.out.println(TeamMapper.INSTANCE.mapEntity(tm));
 
-//		Pageable pageable = PageRequest.of(0, 10);
-//		TeamResponse tm = TeamMapper.INSTANCE.mapEntity(teamRepository.findAll(pageable).getContent().get(0));
-//		System.out.println(tm.getTeamName()); 
+		/*
+		 * Pageable pageable = PageRequest.of(0, 10); TeamResponse tm =
+		 * TeamMapper.INSTANCE.mapEntity(teamRepository.findAll(pageable).getContent().
+		 * get(0)); System.out.println(tm.getTeamName());
+		 */
 	}
 }

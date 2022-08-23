@@ -20,7 +20,9 @@ public interface TeamMapper {
 
 	Team mapRequest(TeamRequest entity);
 
-	Set<TeamResponse> mapEntities(Set<Team> entities);
+	Team mapResponse(TeamResponse entity);
 
-	List<TeamResponse> mapEntities(List<Team> findAll);
+	Set<TeamResponse> mapResponses(Set<Team> entities);
+
+	List<TeamResponse> mapResponses(List<Team> findAll);
 }

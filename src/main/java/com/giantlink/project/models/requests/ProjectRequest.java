@@ -1,6 +1,7 @@
 package com.giantlink.project.models.requests;
 
 import java.util.Date;
+import java.util.Set;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,5 +19,4 @@ public class ProjectRequest {
 	private Date startDate;
 	private Date finishDate;
 
-	private Long idTeam;
 }

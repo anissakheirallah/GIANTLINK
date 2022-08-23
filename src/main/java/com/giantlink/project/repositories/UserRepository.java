@@ -10,5 +10,5 @@ import com.giantlink.project.entities.User;
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
-	Optional<User> findByuserName(String username);
+	Optional<User> findByUserName(String username);
 }

@@ -51,9 +51,6 @@ public class User {
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
 
-//	@ManyToOne
-//	@JsonBackReference
-//	@JoinColumn(name = "team_id", nullable = false)
 	@ManyToMany
 	@JoinTable(name = "team_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
 	private Set<Team> teams;

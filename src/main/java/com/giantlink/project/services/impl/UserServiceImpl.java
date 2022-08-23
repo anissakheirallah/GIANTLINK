@@ -20,7 +20,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -70,8 +69,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponse addUser(UserRequest userRequest) throws GlAlreadyExistException, GlNotFoundException {
-		System.out.println(userRequest);
-		Optional<User> userSearch = userRepository.findByuserName(userRequest.getUserName());
+		Optional<User> userSearch = userRepository.findByUserName(userRequest.getUserName());
 		if (userSearch.isPresent()) {
 			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
 		} else {
@@ -176,7 +174,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByuserName(username).get();
+		User user = userRepository.findByUserName(username).get();
 		if (user == null) {
 			throw new UsernameNotFoundException("user : " + username + "not found");
 		} else {
@@ -192,7 +190,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponse getUser(String userName) throws GlNotFoundException {
-		Optional<User> userSearch = userRepository.findByuserName(userName);
+		Optional<User> userSearch = userRepository.findByUserName(userName);
 		if (userSearch.isEmpty()) {
 			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {

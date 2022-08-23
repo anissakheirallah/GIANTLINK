@@ -13,9 +13,9 @@ import com.giantlink.project.models.responses.ProjectResponse;
 
 @Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
 public interface ProjectMapper {
-
+	
 	ProjectMapper INSTANCE = Mappers.getMapper(ProjectMapper.class);
-
+	
 	ProjectResponse mapEntity(Project entity);
 
 	Project mapRequest(ProjectRequest entity);
