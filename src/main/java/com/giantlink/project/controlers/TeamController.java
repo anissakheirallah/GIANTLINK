@@ -33,7 +33,7 @@ public class TeamController {
 	@Autowired
 	TeamService teamService;
 
-	@GetMapping("/teams")
+	@GetMapping("/all")
 	public ResponseEntity<List<TeamResponse>> getTeams() {
 		return new ResponseEntity<List<TeamResponse>>(teamService.getTeams(), HttpStatus.OK);
 	}

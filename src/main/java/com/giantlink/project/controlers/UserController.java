@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -38,12 +39,14 @@ public class UserController {
 	@Autowired
 	UserService userService;
 
-	@GetMapping("/users")
+	@GetMapping("/all")
 	public ResponseEntity<List<UserResponse>> getUsers() {
 		return new ResponseEntity<List<UserResponse>>(userService.getUsers(), HttpStatus.OK);
 	}
 
-	@PostMapping(value = "/", consumes = {"*/*"})
+	// @RequestMapping(value = "/", method = RequestMethod .POST)
+	// @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping
 	public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest)
 			throws GlAlreadyExistException, GlNotFoundException {
 		return new ResponseEntity<UserResponse>(userService.addUser(userRequest), HttpStatus.CREATED);
@@ -79,6 +82,7 @@ public class UserController {
 	}
 
 	@GetMapping
+	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);

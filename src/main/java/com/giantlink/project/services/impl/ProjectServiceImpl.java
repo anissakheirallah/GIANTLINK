@@ -6,13 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Project;
-import com.giantlink.project.entities.Team;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.ProjectMapper;
@@ -34,20 +35,21 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public ProjectResponse addProject(ProjectRequest projectRequest)
 			throws GlNotFoundException, GlAlreadyExistException {
-		Optional<Project> projectSearch = projectRepository.findByprojectName(projectRequest.getProjectName());
+		Optional<Project> projectSearch = projectRepository.findByProjectName(projectRequest.getProjectName());
 		if (projectSearch.isPresent()) {
 			throw new GlAlreadyExistException(projectRequest.getProjectName(), Project.class.getSimpleName());
 		} else {
-			Optional<Team> team = teamRepository.findById(projectRequest.getIdTeam());
-			if (team.isEmpty()) {
-				throw new GlNotFoundException(projectRequest.getIdTeam().toString(), Team.class.getSimpleName());
-			}
 
-			Project project = Project.builder().projectName(projectRequest.getProjectName())
-					.projectType(projectRequest.getProjectType()).team(team.get())
-					.startDate(projectRequest.getStartDate()).finishDate(projectRequest.getFinishDate()).build();
+			/*
+			 * Project project =
+			 * Project.builder().projectName(projectRequest.getProjectName())
+			 * .projectType(projectRequest.getProjectType()).team(team.get())
+			 * .startDate(projectRequest.getStartDate()).finishDate(projectRequest.
+			 * getFinishDate()).build();
+			 */
 
-			//Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
+			Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
+			// project.setTeam(team.get());
 			return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(project));
 		}
 	}
@@ -69,13 +71,9 @@ public class ProjectServiceImpl implements ProjectService {
 		if (projectSearch.isEmpty()) {
 			throw new GlNotFoundException(id.toString(), Project.class.getSimpleName());
 		}
-		Optional<Team> teamSearch = teamRepository.findById(projectRequest.getIdTeam());
-		if (teamSearch.isEmpty()) {
-			throw new GlNotFoundException(projectRequest.getIdTeam().toString(), Team.class.getSimpleName());
-		}
 		projectSearch.get().setProjectName(projectRequest.getProjectName());
 		projectSearch.get().setProjectType(projectRequest.getProjectType());
-		projectSearch.get().setTeam(teamSearch.get());
+		// projectSearch.get().setTeam(teamSearch.get());
 		projectSearch.get().setStartDate(projectRequest.getStartDate());
 		projectSearch.get().setFinishDate(projectRequest.getFinishDate());
 		return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(projectSearch.get()));
@@ -91,9 +89,10 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 	}
 
+	
 	@Override
-	public List<ProjectResponse> getProjects() {
-		return ProjectMapper.INSTANCE.mapResponses(projectRepository.findAll());
+	public List<Project> getProjects() {
+		return projectRepository.findAll();
 	}
 
 	@Override
@@ -111,6 +110,12 @@ public class ProjectServiceImpl implements ProjectService {
 		requestResponse.put("totalElements", projects.getTotalElements());
 		requestResponse.put("totalPages", projects.getTotalPages());
 		return requestResponse;
+	}
+
+	@Transactional
+	@Override
+	public List<ProjectResponse> getProjectsResponses() {
+		return ProjectMapper.INSTANCE.mapResponses(projectRepository.findAll());
 	}
 
 }

@@ -20,6 +20,7 @@ import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.TeamMapper;
 import com.giantlink.project.models.requests.TeamRequest;
+import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.TeamResponse;
 import com.giantlink.project.repositories.ProjectRepository;
 import com.giantlink.project.repositories.TeamRepository;
@@ -41,29 +42,24 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public TeamResponse addTeam(TeamRequest teamRequest) throws GlNotFoundException, GlAlreadyExistException {
 		Optional<Team> teamSearch = teamRepository.findByteamName(teamRequest.getTeamName());
-		if (teamSearch.isEmpty()) {
+		if (!teamSearch.isEmpty()) {
 			throw new GlAlreadyExistException(teamRequest.getTeamName(), Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
-		for (Long idSup : teamRequest.getIdsSup()) {
-			Optional<User> userSearch = userRepository.findById(idSup);
-			if (userSearch.isEmpty()) {
-				throw new GlNotFoundException(idSup.toString(), User.class.getSimpleName());
-			} else {
-				users.add(userSearch.get());
+		if (teamRequest.getTeam_users() != null) {
+			for (UserRequest Sup : teamRequest.getTeam_users()) {
+				Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
+				if (userSearch.isEmpty()) {
+					// throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
+				} else {
+					users.add(userSearch.get());
+				}
 			}
 		}
 		Set<Project> projects = new HashSet<>();
-		for (Long idProject : teamRequest.getIdsProject()) {
-			Optional<Project> projectSearch = projectRepository.findById(idProject);
-			if (projectSearch.isEmpty()) {
-				throw new GlNotFoundException(idProject.toString(), Project.class.getSimpleName());
-			} else {
-				projects.add(projectSearch.get());
-			}
-		}
-
-		Team team = Team.builder().teamName(teamRequest.getTeamName()).sups(users).projects(projects).build();
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
+		Team team = Team.builder().teamName(teamRequest.getTeamName()).team_users(users).project(projectSearch.get())
+				.build();
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
 	}
 
@@ -84,25 +80,27 @@ public class TeamServiceImpl implements TeamService {
 			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
-		for (Long idSup : teamRequest.getIdsSup()) {
-			Optional<User> userSearch = userRepository.findById(idSup);
+		for (UserRequest Sup : teamRequest.getTeam_users()) {
+			Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
 			if (userSearch.isEmpty()) {
-				throw new GlNotFoundException(idSup.toString(), User.class.getSimpleName());
+				throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
 			} else {
 				users.add(userSearch.get());
 			}
 		}
 		Set<Project> projects = new HashSet<>();
-		for (Long idProject : teamRequest.getIdsProject()) {
-			Optional<Project> projectSearch = projectRepository.findById(idProject);
-			if (projectSearch.isEmpty()) {
-				throw new GlNotFoundException(idProject.toString(), Project.class.getSimpleName());
-			} else {
-				projects.add(projectSearch.get());
-			}
-		}
-		teamSearch.get().setProjects(projects);
-		teamSearch.get().setSups(users);
+
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
+		/*
+		 * for (ProjectRequest project : teamRequest.getProjects()) { Optional<Project>
+		 * projectSearch =
+		 * projectRepository.findByprojectName(project.getProjectName()); if
+		 * (projectSearch.isEmpty()) { throw new
+		 * GlNotFoundException(project.getProjectName(), Project.class.getSimpleName());
+		 * } else { projects.add(projectSearch.get()); } }
+		 */
+		teamSearch.get().setProject(projectSearch.get());
+		teamSearch.get().setTeam_users(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(teamSearch.get()));
 	}

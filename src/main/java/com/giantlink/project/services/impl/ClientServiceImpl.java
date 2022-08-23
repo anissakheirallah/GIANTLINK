@@ -28,7 +28,7 @@ public class ClientServiceImpl implements ClientService  {
 	@Autowired
 	private ClientRepository clientRepository;
 
-	@Transactional
+	
 	@Override
 	public ClientResponse add(ClientRequest clientRequest) throws GlAlreadyExistException, GlNotFoundException {
 

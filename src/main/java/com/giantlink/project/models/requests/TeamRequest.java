@@ -14,8 +14,6 @@ import lombok.NoArgsConstructor;
 public class TeamRequest {
 
 	private String teamName;
-
-	private Set<Long> idsSup;
-
-	private Set<Long> idsProject;
+	private Set<UserRequest> team_users;
+	private Long idProject;
 }

@@ -5,9 +5,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -39,6 +41,7 @@ import com.giantlink.project.entities.User;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.UserMapper;
+import com.giantlink.project.models.requests.TeamRequest;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
 import com.giantlink.project.repositories.LeadRepository;
@@ -66,31 +69,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponse addUser(UserRequest userRequest) throws GlAlreadyExistException, GlNotFoundException {
-		Optional<User> userSearch = userRepository.findByuserName(userRequest.getUserName());
+		Optional<User> userSearch = userRepository.findByUserName(userRequest.getUserName());
 		if (userSearch.isPresent()) {
 			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
 		} else {
-
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
-			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
-			if (role.isEmpty()) {
-				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
+			Set<Team> teams = new HashSet<>();
+
+			if (userRequest.getTeams() != null) {
+				for (TeamRequest tm : userRequest.getTeams()) {
+					Optional<Team> team = teamRepository.findByteamName(tm.getTeamName());
+					if (team.isEmpty()) {
+						throw new GlNotFoundException(tm.getTeamName().toString(), Team.class.getSimpleName());
+					}
+					teams.add(team.get());
+				}
 			}
-			System.out.println(userRequest);
+
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
-			
+
 			us.setPassword(encoder.encode(userRequest.getPassword()));
-			us.setTeam(team.get());
+			us.setTeams(teams);
 			us.setRole(role.get());
-			/*User us = User.builder().firstName(userRequest.getFirstName()).lastName(userRequest.getLastName())
-					.password(encoder.encode(userRequest.getPassword())).language(userRequest.getLanguage())
-					.userName(userRequest.getUserName()).leads(new HashSet<>()).role(role.get()).team(team.get())
-					.build();
-			if (team.isPresent()) { // throw new
-				GlNotFoundException(userRequest.getIdTeam().toString(), //
-						Team.class.getSimpleName());
-				
-			}*/
 
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(us));
 		}
@@ -120,16 +120,23 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			userSearch.get().setLanguage(userRequest.getLanguage());
 
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
-			Optional<Team> team = teamRepository.findById(userRequest.getIdTeam());
-
 			if (role.isEmpty()) {
 				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
 			}
-			if (team.isEmpty()) {
-				throw new GlNotFoundException(userRequest.getIdTeam().toString(), Team.class.getSimpleName());
+
+			if (userRequest.getTeams() != null) {
+				Set<Team> teams = new HashSet<>();
+				for (TeamRequest tm : userRequest.getTeams()) {
+					Optional<Team> team = teamRepository.findByteamName(tm.getTeamName());
+					if (team.isEmpty()) {
+						throw new GlNotFoundException(tm.getTeamName().toString(), Team.class.getSimpleName());
+					}
+					teams.add(team.get());
+				}
+				userSearch.get().setTeams(teams);
 			}
 			userSearch.get().setRole(role.get());
-			userSearch.get().setTeam(team.get());
+
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
 		}
 	}
@@ -167,7 +174,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		User user = userRepository.findByuserName(username).get();
+		User user = userRepository.findByUserName(username).get();
 		if (user == null) {
 			throw new UsernameNotFoundException("user : " + username + "not found");
 		} else {
@@ -183,7 +190,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 	@Override
 	public UserResponse getUser(String userName) throws GlNotFoundException {
-		Optional<User> userSearch = userRepository.findByuserName(userName);
+		Optional<User> userSearch = userRepository.findByUserName(userName);
 		if (userSearch.isEmpty()) {
 			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {

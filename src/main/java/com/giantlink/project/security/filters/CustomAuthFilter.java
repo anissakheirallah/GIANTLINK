@@ -1,4 +1,4 @@
-package com.giantlink.project.filter;
+package com.giantlink.project.security.filters;
 
 import java.io.IOException;
 import java.util.Date;
@@ -11,6 +11,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -27,6 +28,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
 
 	private final AuthenticationManager authenticationManager;
+
+	/*
+	 * @Value("${vente.app.jwtSecret}") private String jwtSecret;
+	 * 
+	 * @Value("${vente.app.jwtExpiration}") private Integer jwtExpiration;
+	 * 
+	 * @Value("${vente.app.jwrtExpiration}") private Integer jwrtExpiration;
+	 */
 
 	public CustomAuthFilter(AuthenticationManager authenticationManager) {
 		this.authenticationManager = authenticationManager;
@@ -48,14 +57,14 @@ public class CustomAuthFilter extends UsernamePasswordAuthenticationFilter {
 		User user = (User) authentication.getPrincipal();
 		Algorithm algorithm = Algorithm.HMAC256("GiantLink_Vente".getBytes());
 		String access_token = JWT.create().withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 10 * 60 * 1000))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 3600000))
 				.withIssuer(request.getRequestURL().toString())
 				.withClaim("roles",
 						user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
 				.sign(algorithm);
 
 		String refresh_token = JWT.create().withSubject(user.getUsername())
-				.withExpiresAt(new Date(System.currentTimeMillis() + 30 * 60 * 1000))
+				.withExpiresAt(new Date(System.currentTimeMillis() + 4600000))
 				.withIssuer(request.getRequestURL().toString()).sign(algorithm);
 
 		/*

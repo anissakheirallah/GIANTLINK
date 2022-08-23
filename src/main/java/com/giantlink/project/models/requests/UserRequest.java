@@ -2,8 +2,6 @@ package com.giantlink.project.models.requests;
 
 import java.util.Set;
 
-import com.giantlink.project.entities.Lead;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +20,6 @@ public class UserRequest {
 	private String language;
 
 	private Long idRole;
-	private Long idTeam;
-
-	private Set<Lead> leads;
+	private Set<TeamRequest> teams;
+	private Set<LeadRequest> leads;
 }

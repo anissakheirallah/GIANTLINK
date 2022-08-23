@@ -11,12 +11,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,23 +47,25 @@ public class User {
 	private String language;
 
 	@ManyToOne
+	@JsonBackReference
 	@JoinColumn(name = "role_id", nullable = false)
 	private Role role;
-	
-	@ManyToOne
-	@JoinColumn(name = "team_id", nullable = false)
-	private Team team;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@ManyToMany
+	@JoinTable(name = "team_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
+	private Set<Team> teams;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	@JsonManagedReference
 	private Set<Lead> leads;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-	
+
 	@PrePersist
 	private void onCreate() {
 		this.timestamp = new Date();
 	}
-	
+
 }
