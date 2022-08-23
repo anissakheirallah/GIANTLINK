@@ -55,8 +55,11 @@ public class Lead {
 	 * options; //private String options;
 	 */
 
-	@OneToMany(mappedBy = "lead", fetch = FetchType.EAGER)
-	private Set<Product> products;
+	
+	@ManyToOne(cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "product_id", nullable = false)
+	@JsonBackReference
+	private Product product;
 
 	@ManyToMany(mappedBy = "leads", cascade = CascadeType.ALL)
 	@JsonBackReference

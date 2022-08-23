@@ -17,7 +17,6 @@ public class ServiceResponse {
 
 	private String serviceName;
 	private Float point;
-	private Long idProject;
 	private Boolean statut;
 
 	// private Set<LeadResponse> leads;

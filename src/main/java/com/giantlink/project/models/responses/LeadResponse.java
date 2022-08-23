@@ -20,9 +20,9 @@ public class LeadResponse {
 	private UserResponse user;
 	private ClientResponse client;
 	private CommercialResponse commercial;
+	private ProductResponse product;
 
 	private Set<ServiceResponse> Services;
-	private Set<ProductResponse> products;
-	private Set<OptionResponse> options;
+	
 
 }

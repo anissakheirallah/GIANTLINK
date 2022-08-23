@@ -13,6 +13,6 @@ public class ServiceRequest {
 
 	private String serviceName;
 	private Float point;
-	private Long idProject;
 	private Boolean statut;
+	private Long serviceTypeId;
 }

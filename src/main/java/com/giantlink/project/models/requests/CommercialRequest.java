@@ -13,7 +13,7 @@ public class CommercialRequest {
 
 	private String commercialName;
 	private Boolean statut;
-	private Long idCalendar;
+	//private Long idCalendar;
 	
 	
 }

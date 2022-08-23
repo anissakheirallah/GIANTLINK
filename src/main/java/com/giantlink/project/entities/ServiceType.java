@@ -1,9 +1,14 @@
 package com.giantlink.project.entities;
 
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
@@ -25,5 +30,9 @@ public class ServiceType {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String libelle;
+	
+	@OneToMany(mappedBy = "serviceType",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+	private Set<Service> services;
+	
 
 }

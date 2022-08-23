@@ -17,7 +17,7 @@ public class CommercialResponse {
 
 	private String commercialName;
 	private Boolean statut;
-	private Long idCalendar;
+	//private Long idCalendar;
 
 	// private Set<LeadResponse> leads;
 }
