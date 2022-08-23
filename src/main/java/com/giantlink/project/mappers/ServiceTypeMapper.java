@@ -11,9 +11,9 @@ import com.giantlink.project.entities.ServiceType;
 import com.giantlink.project.models.requests.ServiceTypeRequest;
 import com.giantlink.project.models.responses.ServiceTypeResponse;
 
-@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR)
+@Mapper(componentModel = "spring", injectionStrategy = InjectionStrategy.CONSTRUCTOR, uses = ServiceMapper.class)
 public interface ServiceTypeMapper {
-	
+
 	ServiceTypeMapper INSTANCE = Mappers.getMapper(ServiceTypeMapper.class);
 
 	List<ServiceTypeResponse> mapServiceType(List<ServiceType> types);

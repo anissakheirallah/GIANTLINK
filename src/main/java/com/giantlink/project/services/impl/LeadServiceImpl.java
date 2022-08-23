@@ -52,10 +52,10 @@ public class LeadServiceImpl implements LeadService {
 		
 		
 		//check commercial
-		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercial_id());
+		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
 
 		if (!findCommercial.isPresent()) {
-			throw new GlNotFoundException(leadRequest.getCommercial_id().toString(), Commercial.class.getSimpleName());
+			throw new GlNotFoundException(leadRequest.getCommercialId().toString(), Commercial.class.getSimpleName());
 		}
 		
 		

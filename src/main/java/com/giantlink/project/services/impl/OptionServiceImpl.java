@@ -36,6 +36,9 @@ public class OptionServiceImpl implements OptionService {
 
 		Optional<Option> findOption = optionRepository.findByOptionName(optionRequest.getOptionName());
 		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
+		if (!findOption.isPresent()) {
+			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
+		}
 		if (findOption.isPresent()) {
 			throw new GlAlreadyExistException(optionRequest.getOptionName(), Option.class.getSimpleName());
 		}
@@ -47,65 +50,52 @@ public class OptionServiceImpl implements OptionService {
 
 	@Override
 	public List<OptionResponse> getAll() {
-
 		return OptionMapper.INSTANCE.mapOption(optionRepository.findAll());
-
 	}
 
 	@Override
 	public OptionResponse get(Long id) throws GlNotFoundException {
-
 		Optional<Option> findOption = optionRepository.findById(id);
-
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-
 		return OptionMapper.INSTANCE.entityToResponse(optionRepository.findById(id).get());
 	}
 
 	@Override
 	public void delete(Long id) throws GlNotFoundException {
-
 		Optional<Option> findOption = optionRepository.findById(id);
-
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-
 		optionRepository.deleteById(id);
-
 	}
 
 	@Override
 	public OptionResponse update(Long id, OptionRequest optionRequest) throws GlNotFoundException {
-
 		Optional<Option> findOption = optionRepository.findById(id);
-
+		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
+		if (!findOption.isPresent()) {
+			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
+		}
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-
 		Option option = optionRepository.findById(id).get();
-
 		option.setOptionName(optionRequest.getOptionName());
+		option.setProject(findProject.get());
 
-		optionRepository.save(option);
-
-		return OptionMapper.INSTANCE.entityToResponse(option);
+		return OptionMapper.INSTANCE.entityToResponse(optionRepository.save(option));
 	}
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
-
 		List<OptionResponse> optionList = new ArrayList<>();
 		Page<Option> options = (name.isBlank()) ? optionRepository.findAll(pageable)
 				: optionRepository.findByOptionNameContainingIgnoreCase(name, pageable);
 		options.getContent().forEach(option -> {
 			OptionResponse response = OptionResponse.builder().id(option.getId()).optionName(option.getOptionName())
-
 					.build();
-
 			optionList.add(response);
 		});
 		Map<String, Object> optionMap = new HashMap<>();

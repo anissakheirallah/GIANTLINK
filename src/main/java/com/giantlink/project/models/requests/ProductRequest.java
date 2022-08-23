@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class ProductRequest {
 
 	private String productName;
-	private Long idProject;
 	
-	private Long lead_id;
+	
+	
 }

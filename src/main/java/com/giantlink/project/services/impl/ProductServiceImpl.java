@@ -80,13 +80,8 @@ public class ProductServiceImpl implements ProductService{
 		}
 		
 		Product product = productRepository.findById(id).get();
-
 		product.setProductName(productRequest.getProductName());
-		
-
-		productRepository.save(product);
-
-		return ProductMapper.INSTANCE.entityToResponse(product);
+		return ProductMapper.INSTANCE.entityToResponse(productRepository.save(product));
 	}
 
 	@Override
