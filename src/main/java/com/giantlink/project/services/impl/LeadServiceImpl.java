@@ -1,23 +1,31 @@
 package com.giantlink.project.services.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Client;
+import com.giantlink.project.entities.Commercial;
 import com.giantlink.project.entities.Lead;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.mappers.ClientMapper;
 import com.giantlink.project.mappers.LeadMapper;
 import com.giantlink.project.models.requests.LeadRequest;
+import com.giantlink.project.models.responses.ClientResponse;
 import com.giantlink.project.models.responses.LeadResponse;
 import com.giantlink.project.repositories.ClientRepository;
+import com.giantlink.project.repositories.CommercialRepository;
 import com.giantlink.project.repositories.LeadRepository;
+import com.giantlink.project.repositories.ProductRepository;
+import com.giantlink.project.repositories.ServiceRepository;
+import com.giantlink.project.repositories.UserRepository;
 import com.giantlink.project.services.LeadService;
 
 @Service
@@ -25,10 +33,44 @@ public class LeadServiceImpl implements LeadService {
 
 	@Autowired
 	private LeadRepository leadRepository;
+	
+	@Autowired
+	private ServiceRepository serviceRepository;
+	
+	@Autowired
+	private ProductRepository productRepository;
+	
+	@Autowired
+	private UserRepository userRepository;
+	
+	@Autowired
+	private ClientRepository clientRepository;
+	
+	@Autowired
+	private CommercialRepository commercialRepository;
 
 	
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
+		
+		// can the client have the same lead twice ??  
+		
+		//check client
+		//check commercial
+		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercial_id());
+
+		if (!findCommercial.isPresent()) {
+			throw new GlNotFoundException(leadRequest.getCommercial_id().toString(), Commercial.class.getSimpleName());
+		}
+		
+		
+		
+		
+		//check service
+		//check product
+		//check option
+		//check call
+		
 		
 		
 		return LeadMapper.INSTANCE
@@ -73,11 +115,36 @@ public class LeadServiceImpl implements LeadService {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	
+	
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
-		// TODO Auto-generated method stub
-		return null;
+		
+		List<ClientResponse> leadList = new ArrayList<>();
+		Page<Client> leads = (name.isBlank()) ? leadRepository.findAll(pageable)
+				: leadRepository.findByLastNameContainingIgnoreCase(name, pageable);
+		leads.getContent().forEach(lead -> {
+			ClientResponse response = ClientResponse.builder().id(lead.getId())
+					.firstName(lead.getFirstName())
+					.lastName(lead.getLastName())
+					.email(lead.getEmail())
+					.adress(lead.getAdress())
+					.tele(lead.getTele())
+					.gsm(lead.getGsm())
+				    .city(lead.getCity())
+					.cp(lead.getCp())
+					.build();
+			
+			leadList.add(response);
+		});
+		Map<String, Object> leadMap = new HashMap<>();
+		leadMap.put("content", leadList);
+		leadMap.put("currentPage", leads.getNumber());
+		leadMap.put("totalElements", leads.getTotalElements());
+		leadMap.put("totalPages", leads.getTotalPages());
+
+		return leadMap;
 	}
 
 }

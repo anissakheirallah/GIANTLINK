@@ -11,14 +11,11 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.giantlink.project.entities.Client;
 import com.giantlink.project.entities.Option;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.mappers.ClientMapper;
 import com.giantlink.project.mappers.OptionMapper;
 import com.giantlink.project.models.requests.OptionRequest;
-import com.giantlink.project.models.responses.ClientResponse;
 import com.giantlink.project.models.responses.OptionResponse;
 import com.giantlink.project.repositories.OptionRepository;
 import com.giantlink.project.services.OptionService;
