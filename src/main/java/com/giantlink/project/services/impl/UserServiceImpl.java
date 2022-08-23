@@ -41,7 +41,6 @@ import com.giantlink.project.entities.User;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.UserMapper;
-import com.giantlink.project.models.requests.TeamRequest;
 import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.UserResponse;
 import com.giantlink.project.repositories.LeadRepository;
@@ -76,15 +75,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
 			Set<Team> teams = new HashSet<>();
 
-			if (userRequest.getTeams() != null) {
-				for (TeamRequest tm : userRequest.getTeams()) {
-					Optional<Team> team = teamRepository.findByteamName(tm.getTeamName());
-					if (team.isEmpty()) {
-						throw new GlNotFoundException(tm.getTeamName().toString(), Team.class.getSimpleName());
-					}
-					teams.add(team.get());
-				}
-			}
+			/*
+			 * if (userRequest.() != null) { for (TeamRequest tm : userRequest.getTeams()) {
+			 * Optional<Team> team = teamRepository.findByteamName(tm.getTeamName()); if
+			 * (team.isEmpty()) { throw new GlNotFoundException(tm.getTeamName().toString(),
+			 * Team.class.getSimpleName()); } teams.add(team.get()); } }
+			 */
 
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
 
@@ -124,17 +120,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
 			}
 
-			if (userRequest.getTeams() != null) {
-				Set<Team> teams = new HashSet<>();
-				for (TeamRequest tm : userRequest.getTeams()) {
-					Optional<Team> team = teamRepository.findByteamName(tm.getTeamName());
-					if (team.isEmpty()) {
-						throw new GlNotFoundException(tm.getTeamName().toString(), Team.class.getSimpleName());
-					}
-					teams.add(team.get());
-				}
-				userSearch.get().setTeams(teams);
-			}
+			/*
+			 * if (userRequest.getTeams() != null) { Set<Team> teams = new HashSet<>(); for
+			 * (TeamRequest tm : userRequest.getTeams()) { Optional<Team> team =
+			 * teamRepository.findByteamName(tm.getTeamName()); if (team.isEmpty()) { throw
+			 * new GlNotFoundException(tm.getTeamName().toString(),
+			 * Team.class.getSimpleName()); } teams.add(team.get()); }
+			 * userSearch.get().setTeams(teams); } else { throw new
+			 * GlNotFoundException("teams", Team.class.getSimpleName()); }
+			 */
 			userSearch.get().setRole(role.get());
 
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
@@ -194,12 +188,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		if (userSearch.isEmpty()) {
 			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {
-			UserResponse userResponse = UserResponse.builder().firstName(userSearch.get().getFirstName())
-					.lastName(userSearch.get().getLastName()).language(userSearch.get().getLanguage())
-					.password(userSearch.get().getPassword()).role(userSearch.get().getRole())
-					.userName(userSearch.get().getUserName()).build();
-			return userResponse;
-			// UserMapper.INSTANCE.mapEntity(userSearch.get())
+			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
 	}
 
@@ -233,7 +222,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				DecodedJWT decodedJWT = jwtVerifier.verify(refresh_token);
 				String username = decodedJWT.getSubject();
 				User user = UserMapper.INSTANCE.mapResponse(getUser(username));
-				// System.out.println();
 
 				List<GrantedAuthority> authorities = new ArrayList<>();
 

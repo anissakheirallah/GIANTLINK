@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-
 import com.giantlink.project.entities.Client;
 import com.giantlink.project.entities.Service;
 import com.giantlink.project.exceptions.GlAlreadyExistException;

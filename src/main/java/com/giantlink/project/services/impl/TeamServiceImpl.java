@@ -20,7 +20,6 @@ import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.TeamMapper;
 import com.giantlink.project.models.requests.TeamRequest;
-import com.giantlink.project.models.requests.UserRequest;
 import com.giantlink.project.models.responses.TeamResponse;
 import com.giantlink.project.repositories.ProjectRepository;
 import com.giantlink.project.repositories.TeamRepository;
@@ -42,24 +41,29 @@ public class TeamServiceImpl implements TeamService {
 	@Override
 	public TeamResponse addTeam(TeamRequest teamRequest) throws GlNotFoundException, GlAlreadyExistException {
 		Optional<Team> teamSearch = teamRepository.findByteamName(teamRequest.getTeamName());
-		if (!teamSearch.isEmpty()) {
+		if (teamSearch.isPresent()) {
 			throw new GlAlreadyExistException(teamRequest.getTeamName(), Team.class.getSimpleName());
 		}
-		Set<User> users = new HashSet<>();
-		if (teamRequest.getTeam_users() != null) {
-			for (UserRequest Sup : teamRequest.getTeam_users()) {
-				Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
-				if (userSearch.isEmpty()) {
-					// throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
-				} else {
-					users.add(userSearch.get());
-				}
-			}
+		/*
+		 * Set<User> users = new HashSet<>(); if (teamRequest.getTeam_users() != null) {
+		 * for (Long id : teamRequest.getTeam_users()) { Optional<User> userSearch =
+		 * userRepository.findById(id); if (userSearch.isEmpty()) { throw new
+		 * GlNotFoundException("user", User.class.getSimpleName()); } else {
+		 * users.add(userSearch.get()); } } } else { throw new
+		 * GlNotFoundException("users", User.class.getSimpleName()); }
+		 */
+
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
+		if (projectSearch.isEmpty()) {
+			throw new GlNotFoundException("project", Project.class.getSimpleName());
 		}
-		Set<Project> projects = new HashSet<>();
-		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
-		Team team = Team.builder().teamName(teamRequest.getTeamName()).team_users(users).project(projectSearch.get())
-				.build();
+
+		Team team = TeamMapper.INSTANCE.mapRequest(teamRequest);
+		team.setProject(projectSearch.get());
+		/*
+		 * team_users(users) project(projectSearch.get())
+		 */
+
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
 	}
 
@@ -80,25 +84,16 @@ public class TeamServiceImpl implements TeamService {
 			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
-		for (UserRequest Sup : teamRequest.getTeam_users()) {
-			Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
-			if (userSearch.isEmpty()) {
-				throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
-			} else {
-				users.add(userSearch.get());
-			}
-		}
-		Set<Project> projects = new HashSet<>();
-
-		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
 		/*
-		 * for (ProjectRequest project : teamRequest.getProjects()) { Optional<Project>
-		 * projectSearch =
-		 * projectRepository.findByprojectName(project.getProjectName()); if
-		 * (projectSearch.isEmpty()) { throw new
-		 * GlNotFoundException(project.getProjectName(), Project.class.getSimpleName());
-		 * } else { projects.add(projectSearch.get()); } }
+		 * for (UserRequest Sup : teamRequest.getTeam_users()) { Optional<User>
+		 * userSearch = userRepository.findByUserName(Sup.getUserName()); if
+		 * (userSearch.isEmpty()) { throw new GlNotFoundException(Sup.getUserName(),
+		 * User.class.getSimpleName()); } else { users.add(userSearch.get()); } }
+		 * 
+		 * Set<Project> projects = new HashSet<>();
 		 */
+
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		teamSearch.get().setProject(projectSearch.get());
 		teamSearch.get().setTeam_users(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());

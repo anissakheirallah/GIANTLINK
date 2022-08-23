@@ -5,7 +5,6 @@ import java.util.Set;
 
 import org.mapstruct.InjectionStrategy;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 import com.giantlink.project.entities.Team;
@@ -17,7 +16,7 @@ public interface TeamMapper {
 
 	TeamMapper INSTANCE = Mappers.getMapper(TeamMapper.class);
 
-	//@Mapping(target = "project", ignore = true)
+	// @Mapping(target = "project", ignore = true)
 	TeamResponse mapEntity(Team entity);
 
 	Team mapRequest(TeamRequest entity);

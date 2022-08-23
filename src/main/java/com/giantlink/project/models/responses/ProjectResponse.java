@@ -3,8 +3,6 @@ package com.giantlink.project.models.responses;
 import java.util.Date;
 import java.util.Set;
 
-import com.giantlink.project.entities.Option;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
