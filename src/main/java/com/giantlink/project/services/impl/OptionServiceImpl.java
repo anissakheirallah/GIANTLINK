@@ -12,12 +12,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Option;
+import com.giantlink.project.entities.Project;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.OptionMapper;
 import com.giantlink.project.models.requests.OptionRequest;
 import com.giantlink.project.models.responses.OptionResponse;
 import com.giantlink.project.repositories.OptionRepository;
+import com.giantlink.project.repositories.ProjectRepository;
 import com.giantlink.project.services.OptionService;
 
 @Service
@@ -26,16 +28,20 @@ public class OptionServiceImpl implements OptionService {
 	@Autowired
 	private OptionRepository optionRepository;
 
+	@Autowired
+	private ProjectRepository projectRepository;
+
 	@Override
 	public OptionResponse add(OptionRequest optionRequest) throws GlAlreadyExistException, GlNotFoundException {
 
 		Optional<Option> findOption = optionRepository.findByOptionName(optionRequest.getOptionName());
-
+		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
 		if (findOption.isPresent()) {
 			throw new GlAlreadyExistException(optionRequest.getOptionName(), Option.class.getSimpleName());
 		}
-		return OptionMapper.INSTANCE
-				.entityToResponse(optionRepository.save(OptionMapper.INSTANCE.requestToEntity(optionRequest)));
+		Option op = OptionMapper.INSTANCE.requestToEntity(optionRequest);
+		op.setProject(findProject.get());
+		return OptionMapper.INSTANCE.entityToResponse(optionRepository.save(op));
 
 	}
 

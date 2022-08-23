@@ -39,4 +39,6 @@ public class Project {
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
 	private Set<Team> teams;
 
+	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	private Set<Option> options;
 }

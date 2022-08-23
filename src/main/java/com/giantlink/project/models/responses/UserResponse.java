@@ -6,7 +6,6 @@ import com.giantlink.project.entities.Role;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -26,7 +25,7 @@ public class UserResponse {
 	private String language;
 
 	private Role role;
-	private Set<TeamResponse> teams;
+	//private Set<TeamResponse> teams;
 
 	private Set<LeadResponse> leads;
 }
