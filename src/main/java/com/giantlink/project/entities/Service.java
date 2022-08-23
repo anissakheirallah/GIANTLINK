@@ -34,9 +34,8 @@ public class Service {
 	private Long id;
 	private String serviceName;
 	private Float point;
-	private Long idProject;
 	private Boolean statut;
-	
+	// should have idProject ?? there is no relationship between service and project 
 	
 	@ManyToMany
 	private Set<Lead> leads;

@@ -14,9 +14,6 @@ import lombok.Setter;
 public class OptionResponse {
 
 	private Long id;
-
 	private String optionName;
-	private Long idProject;
-
-	private LeadResponse lead;
+	
 }

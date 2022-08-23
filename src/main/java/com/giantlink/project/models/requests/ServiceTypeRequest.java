@@ -1,7 +1,5 @@
 package com.giantlink.project.models.requests;
 
-import java.util.Set;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,11 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LeadRequest {
-
-	private Long user_id;
-	private Long commercial_id;
-	private Long client_id;
+public class ServiceTypeRequest {
 	
-	private Set<ServiceRequest> Services;
+	
+	private String libelle;
+
 }

@@ -20,18 +20,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.models.requests.OptionRequest;
-import com.giantlink.project.models.responses.OptionResponse;
-import com.giantlink.project.services.OptionService;
+import com.giantlink.project.models.requests.ServiceTypeRequest;
+import com.giantlink.project.models.responses.ServiceTypeResponse;
+import com.giantlink.project.services.ServiceTypeService;
 
 @RestController
-@RequestMapping("/api/option")
+@RequestMapping("/api/serviceType")
 @CrossOrigin(origins = { "http://localhost:4200" })
-public class OptionController {
-
+public class ServiceTypeController {
 	
 	@Autowired
-	private OptionService optionService;
+	private ServiceTypeService typeService;
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
@@ -39,31 +38,34 @@ public class OptionController {
 													  @RequestParam(defaultValue = "", name = "name") String name) 
 	{
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String,Object>>(optionService.getAllPaginations(name, pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String,Object>>(typeService.getAllPaginations(name, pageable), HttpStatus.OK);
 		
 	}
 
 	@PostMapping
-	public ResponseEntity<OptionResponse> add(@RequestBody OptionRequest optionRequest)
+	public ResponseEntity<ServiceTypeResponse> add(@RequestBody ServiceTypeRequest serviceTypeRequest)
 			throws GlNotFoundException,GlAlreadyExistException {
-		return new ResponseEntity<OptionResponse>(optionService.add(optionRequest), HttpStatus.CREATED);
+		return new ResponseEntity<ServiceTypeResponse>(typeService.add(serviceTypeRequest), HttpStatus.CREATED);
 	}
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<OptionResponse> getOne(@PathVariable Long id) throws GlNotFoundException {
-		return new ResponseEntity<OptionResponse>(optionService.get(id), HttpStatus.OK);
+	public ResponseEntity<ServiceTypeResponse> getOne(@PathVariable Long id) throws GlNotFoundException {
+		return new ResponseEntity<ServiceTypeResponse>(typeService.get(id), HttpStatus.OK);
 	}
 	
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException{
-		optionService.delete(id);
+		typeService.delete(id);
 		return new ResponseEntity<String>("deleted !", HttpStatus.OK);
 	}
 	
 
 	@PutMapping("/{id}")
-	public ResponseEntity<OptionResponse> edit(@PathVariable("id") Long id, @RequestBody OptionRequest optionRequest) throws GlAlreadyExistException, GlNotFoundException  {
-		return new ResponseEntity<OptionResponse>(optionService.update(id, optionRequest), HttpStatus.OK);
+	public ResponseEntity<ServiceTypeResponse> edit(@PathVariable("id") Long id, @RequestBody ServiceTypeRequest serviceTypeRequest) throws GlAlreadyExistException, GlNotFoundException  {
+		return new ResponseEntity<ServiceTypeResponse>(typeService.update(id, serviceTypeRequest), HttpStatus.OK);
 	}
+
+	
+	
 
 }

@@ -41,11 +41,7 @@ public class ClientServiceImpl implements ClientService  {
 		}
 		return ClientMapper.INSTANCE
 				.entityToResponse(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(clientRequest)));
-		
-		
-		
-		
-	
+
 
 	}
 
