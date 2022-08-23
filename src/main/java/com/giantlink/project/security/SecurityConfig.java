@@ -2,7 +2,6 @@ package com.giantlink.project.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -44,9 +43,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		authFilter.setFilterProcessesUrl("/api/login");
 		http.csrf().disable();
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests()
-				.antMatchers("api/login/**", "api/user/refreshtoken/**")
-				.permitAll();//, "api/user/**", "api/team/**", "api/user/**"
+		http.authorizeRequests().antMatchers("api/login/**", "api/user/refreshtoken/**").permitAll();// , "api/user/**",
+																										// "api/team/**",
+																										// "api/user/**"
 
 //		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(authFilter);

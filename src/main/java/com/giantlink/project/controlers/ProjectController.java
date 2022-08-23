@@ -8,7 +8,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,7 +33,6 @@ public class ProjectController {
 	@Autowired
 	ProjectService projectService;
 
-	
 	@GetMapping("/all")
 	public ResponseEntity<List<Project>> getprojects() {
 		return new ResponseEntity<List<Project>>(projectService.getProjects(), HttpStatus.OK);
@@ -63,7 +61,6 @@ public class ProjectController {
 		return new ResponseEntity<ProjectResponse>(projectService.updateProject(id, projectRequest), HttpStatus.OK);
 	}
 
-	
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {

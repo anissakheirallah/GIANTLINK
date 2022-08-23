@@ -23,6 +23,4 @@ public class ProjectResponse {
 	private String projectType;
 	private Date startDate;
 	private Date finishDate;
-
-	private Set<TeamResponse> teams;
 }
