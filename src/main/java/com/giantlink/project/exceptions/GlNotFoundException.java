@@ -10,7 +10,7 @@ public class GlNotFoundException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public GlNotFoundException(String entityNameAttribut, String entityName) {
-		super(entityNameAttribut + " " + entityName + " Not Found !");
+		super(entityName + " " + entityNameAttribut + " Not Found !");
 		this.entityNameAttribut = entityNameAttribut;
 	}
 

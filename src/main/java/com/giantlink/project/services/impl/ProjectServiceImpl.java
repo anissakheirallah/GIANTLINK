@@ -58,7 +58,7 @@ public class ProjectServiceImpl implements ProjectService {
 	public void deleteProject(Long id) throws GlNotFoundException {
 		Optional<Project> projectSearch = projectRepository.findById(id);
 		if (projectSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Project.class.getSimpleName());
+			throw new GlNotFoundException("project", Project.class.getSimpleName());
 		} else {
 			projectRepository.delete(projectSearch.get());
 		}
@@ -69,7 +69,7 @@ public class ProjectServiceImpl implements ProjectService {
 		Optional<Project> projectSearch = projectRepository.findById(id);
 
 		if (projectSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Project.class.getSimpleName());
+			throw new GlNotFoundException("project", Project.class.getSimpleName());
 		}
 		projectSearch.get().setProjectName(projectRequest.getProjectName());
 		projectSearch.get().setProjectType(projectRequest.getProjectType());
@@ -83,13 +83,12 @@ public class ProjectServiceImpl implements ProjectService {
 	public ProjectResponse getProject(Long id) throws GlNotFoundException {
 		Optional<Project> projectSearch = projectRepository.findById(id);
 		if (projectSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Project.class.getSimpleName());
+			throw new GlNotFoundException("project", Project.class.getSimpleName());
 		} else {
 			return ProjectMapper.INSTANCE.mapEntity(projectSearch.get());
 		}
 	}
 
-	
 	@Override
 	public List<Project> getProjects() {
 		return projectRepository.findAll();

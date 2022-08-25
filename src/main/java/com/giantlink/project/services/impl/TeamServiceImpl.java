@@ -60,7 +60,7 @@ public class TeamServiceImpl implements TeamService {
 	public void deleteTeam(Long id) throws GlNotFoundException {
 		Optional<Team> teamSearch = teamRepository.findById(id);
 		if (teamSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
+			throw new GlNotFoundException("team", Team.class.getSimpleName());
 		} else {
 			teamRepository.delete(teamSearch.get());
 		}
@@ -70,7 +70,7 @@ public class TeamServiceImpl implements TeamService {
 	public TeamResponse updateTeam(Long id, TeamRequest teamRequest) throws GlNotFoundException {
 		Optional<Team> teamSearch = teamRepository.findById(id);
 		if (teamSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
+			throw new GlNotFoundException("team", Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
 
@@ -94,7 +94,7 @@ public class TeamServiceImpl implements TeamService {
 	public TeamResponse getTeam(Long id) throws GlNotFoundException {
 		Optional<Team> teamSearch = teamRepository.findById(id);
 		if (teamSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
+			throw new GlNotFoundException("team", Team.class.getSimpleName());
 		} else {
 			return TeamMapper.INSTANCE.mapEntity(teamSearch.get());
 		}

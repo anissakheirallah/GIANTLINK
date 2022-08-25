@@ -74,7 +74,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		} else {
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
 			if (role.isEmpty()) {
-				throw new GlNotFoundException("Role", Role.class.getSimpleName());
+				throw new GlNotFoundException("role", Role.class.getSimpleName());
 			}
 			Set<Team> teams = new HashSet<>();
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public void deleteUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
+			throw new GlNotFoundException("user", User.class.getSimpleName());
 		} else {
 			userRepository.delete(userSearch.get());
 		}
@@ -101,12 +101,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserResponse updateUser(Long id, UserRequest userRequest) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
+			throw new GlNotFoundException("user", User.class.getSimpleName());
 		} else {
 
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
 			if (role.isEmpty()) {
-				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
+				throw new GlNotFoundException("role", Role.class.getSimpleName());
 			}
 
 			userSearch.get().setFirstName(userRequest.getFirstName());
@@ -124,12 +124,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public UserResponse getUser(Long id) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
+			throw new GlNotFoundException("user", User.class.getSimpleName());
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
 	}
-	
+
 	@Override
 	public UserResponse getUser(String userName) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findByUserName(userName);
@@ -149,11 +149,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	public void changeRole(Long userId, Long roleId) throws GlNotFoundException {
 		Optional<User> userSearch = userRepository.findById(userId);
 		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(userId.toString(), User.class.getSimpleName());
+			throw new GlNotFoundException("user", User.class.getSimpleName());
 		} else {
 			Optional<Role> roleSearch = roleRepository.findById(roleId);
 			if (roleSearch.isEmpty()) {
-				throw new GlNotFoundException(roleId.toString(), Role.class.getSimpleName());
+				throw new GlNotFoundException("role", Role.class.getSimpleName());
 			} else {
 				userSearch.get().setRole(roleSearch.get());
 				userRepository.save(userSearch.get());
@@ -226,7 +226,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 				new ObjectMapper().writeValue(response.getOutputStream(), tokens);
 			} catch (Exception e) {
-				System.out.println("hana");
 				response.setHeader("error", e.getMessage());
 				response.setStatus(403);
 				Map<String, String> error = new HashMap<>();
