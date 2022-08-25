@@ -73,15 +73,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new GlAlreadyExistException(userRequest.getUserName(), User.class.getSimpleName());
 		} else {
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
+			if (role.isEmpty()) {
+				throw new GlNotFoundException("Role", Role.class.getSimpleName());
+			}
 			Set<Team> teams = new HashSet<>();
-
-			/*
-			 * if (userRequest.() != null) { for (TeamRequest tm : userRequest.getTeams()) {
-			 * Optional<Team> team = teamRepository.findByteamName(tm.getTeamName()); if
-			 * (team.isEmpty()) { throw new GlNotFoundException(tm.getTeamName().toString(),
-			 * Team.class.getSimpleName()); } teams.add(team.get()); } }
-			 */
-
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
 
 			us.setPassword(encoder.encode(userRequest.getPassword()));
@@ -109,26 +104,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
 		} else {
 
-			userSearch.get().setFirstName(userRequest.getFirstName());
-			userSearch.get().setLastName(userRequest.getLastName());
-			userSearch.get().setPassword(encoder.encode(userRequest.getPassword()));
-			userSearch.get().setUserName(userRequest.getUserName());
-			userSearch.get().setLanguage(userRequest.getLanguage());
-
 			Optional<Role> role = roleRepository.findById(userRequest.getIdRole());
 			if (role.isEmpty()) {
 				throw new GlNotFoundException(userRequest.getIdRole().toString(), Role.class.getSimpleName());
 			}
 
-			/*
-			 * if (userRequest.getTeams() != null) { Set<Team> teams = new HashSet<>(); for
-			 * (TeamRequest tm : userRequest.getTeams()) { Optional<Team> team =
-			 * teamRepository.findByteamName(tm.getTeamName()); if (team.isEmpty()) { throw
-			 * new GlNotFoundException(tm.getTeamName().toString(),
-			 * Team.class.getSimpleName()); } teams.add(team.get()); }
-			 * userSearch.get().setTeams(teams); } else { throw new
-			 * GlNotFoundException("teams", Team.class.getSimpleName()); }
-			 */
+			userSearch.get().setFirstName(userRequest.getFirstName());
+			userSearch.get().setLastName(userRequest.getLastName());
+			userSearch.get().setPassword(encoder.encode(userRequest.getPassword()));
+			userSearch.get().setUserName(userRequest.getUserName());
+			userSearch.get().setLanguage(userRequest.getLanguage());
 			userSearch.get().setRole(role.get());
 
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
@@ -140,6 +125,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 		Optional<User> userSearch = userRepository.findById(id);
 		if (userSearch.isEmpty()) {
 			throw new GlNotFoundException(id.toString(), User.class.getSimpleName());
+		} else {
+			return UserMapper.INSTANCE.mapEntity(userSearch.get());
+		}
+	}
+	
+	@Override
+	public UserResponse getUser(String userName) throws GlNotFoundException {
+		Optional<User> userSearch = userRepository.findByUserName(userName);
+		if (userSearch.isEmpty()) {
+			throw new GlNotFoundException(userName, User.class.getSimpleName());
 		} else {
 			return UserMapper.INSTANCE.mapEntity(userSearch.get());
 		}
@@ -180,16 +175,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
 		return new org.springframework.security.core.userdetails.User(user.getUserName(), user.getPassword(),
 				authorities);
-	}
-
-	@Override
-	public UserResponse getUser(String userName) throws GlNotFoundException {
-		Optional<User> userSearch = userRepository.findByUserName(userName);
-		if (userSearch.isEmpty()) {
-			throw new GlNotFoundException(userName, User.class.getSimpleName());
-		} else {
-			return UserMapper.INSTANCE.mapEntity(userSearch.get());
-		}
 	}
 
 	@Override

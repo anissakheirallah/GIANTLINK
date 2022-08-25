@@ -36,7 +36,7 @@ public class Commercial {
 	private Long id;
 	private String commercialName;
 	private Boolean statut;
-	private Long idCalendar;
+	//private Long idCalendar;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)

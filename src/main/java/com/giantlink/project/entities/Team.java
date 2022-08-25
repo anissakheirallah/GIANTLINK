@@ -2,6 +2,7 @@ package com.giantlink.project.entities;
 
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -35,7 +36,7 @@ public class Team {
 	private Long id;
 	private String teamName;
 
-	@ManyToMany(mappedBy = "teams")
+	@ManyToMany(mappedBy = "teams", cascade = CascadeType.ALL)
 	private Set<User> team_users;
 
 	@ManyToOne()

@@ -41,22 +41,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		CustomAuthFilter authFilter = new CustomAuthFilter(authenticationManagerBean());
-		authFilter.setFilterProcessesUrl("/api/login");
+		authFilter.setFilterProcessesUrl("/login");
 		http.csrf().disable();
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-		http.authorizeRequests()
-				.antMatchers("api/client/**", "api/login/**", "api/user/refreshtoken/**", "/api/user/**").permitAll();
-		// http.authorizeRequests().antMatchers(HttpMethod.GET,"/api/user/**").hasAnyAuthority("ROLE_RESPONSABLE","ROLE_ADMIN");
-		// http.authorizeRequests().antMatchers(HttpMethod.POST,"/api/user/**").hasAnyAuthority("ROLE_ADMIN");
-		// ======>>> http.authorizeRequests().anyRequest().authenticated();
-		// http.csrf().disable().authorizeRequests().anyRequest().permitAll();
-		// http.csrf().ignoringAntMatchers("api/client/**").and().authorizeRequests().antMatchers("api/client/**").permitAll();
-		http.authorizeRequests().antMatchers("api/login/**", "api/user/refreshtoken/**").permitAll();// , "api/user/**",
-																										// "api/team/**",
-																										// "api/user/**"
+		http.authorizeRequests().antMatchers("login/**", "api/user/refreshtoken/**").permitAll();
+		http.authorizeRequests().anyRequest().authenticated();
+		http.csrf().disable().authorizeRequests().anyRequest().permitAll();
 
-//		http.authorizeRequests().anyRequest().authenticated();
 		http.addFilter(authFilter);
 		http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 	}

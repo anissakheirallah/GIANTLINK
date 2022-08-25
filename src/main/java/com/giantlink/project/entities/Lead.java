@@ -6,14 +6,13 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -55,7 +54,6 @@ public class Lead {
 	 * options; //private String options;
 	 */
 
-	
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "product_id", nullable = false)
 	@JsonBackReference
@@ -74,6 +72,9 @@ public class Lead {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
+
+	@OneToOne(cascade = CascadeType.ALL)
+	private Appointment appointment;
 
 	@PrePersist
 	private void onCreate() {

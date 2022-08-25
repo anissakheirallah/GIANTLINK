@@ -44,14 +44,6 @@ public class TeamServiceImpl implements TeamService {
 		if (teamSearch.isPresent()) {
 			throw new GlAlreadyExistException(teamRequest.getTeamName(), Team.class.getSimpleName());
 		}
-		/*
-		 * Set<User> users = new HashSet<>(); if (teamRequest.getTeam_users() != null) {
-		 * for (Long id : teamRequest.getTeam_users()) { Optional<User> userSearch =
-		 * userRepository.findById(id); if (userSearch.isEmpty()) { throw new
-		 * GlNotFoundException("user", User.class.getSimpleName()); } else {
-		 * users.add(userSearch.get()); } } } else { throw new
-		 * GlNotFoundException("users", User.class.getSimpleName()); }
-		 */
 
 		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		if (projectSearch.isEmpty()) {
@@ -60,9 +52,6 @@ public class TeamServiceImpl implements TeamService {
 
 		Team team = TeamMapper.INSTANCE.mapRequest(teamRequest);
 		team.setProject(projectSearch.get());
-		/*
-		 * team_users(users) project(projectSearch.get())
-		 */
 
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
 	}
@@ -84,14 +73,15 @@ public class TeamServiceImpl implements TeamService {
 			throw new GlNotFoundException(id.toString(), Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
-		/*
-		 * for (UserRequest Sup : teamRequest.getTeam_users()) { Optional<User>
-		 * userSearch = userRepository.findByUserName(Sup.getUserName()); if
-		 * (userSearch.isEmpty()) { throw new GlNotFoundException(Sup.getUserName(),
-		 * User.class.getSimpleName()); } else { users.add(userSearch.get()); } }
-		 * 
-		 * Set<Project> projects = new HashSet<>();
-		 */
+
+//		for (UserRequest Sup : teamRequest.getTeam_users()) {
+//			Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
+//			if (userSearch.isEmpty()) {
+//				throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
+//			} else {
+//				users.add(userSearch.get());
+//			}
+//		}
 
 		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		teamSearch.get().setProject(projectSearch.get());

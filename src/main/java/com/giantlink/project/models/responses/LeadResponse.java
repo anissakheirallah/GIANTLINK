@@ -23,6 +23,7 @@ public class LeadResponse {
 	private ProductResponse product;
 
 	private Set<ServiceResponse> Services;
-	
+
+	private AppointmentResponse appointmentResponse;
 
 }
