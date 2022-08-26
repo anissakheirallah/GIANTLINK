@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -61,10 +60,9 @@ public class Lead {
 	@JsonBackReference
 	private Product product;
 
-	@ManyToMany(mappedBy = "leads", cascade = CascadeType.ALL)
-	@JsonBackReference
-	private Set<Service> Services;
-	// private String Services;
+	@ManyToMany(fetch = FetchType.EAGER)
+	private Set<Service> services;
+
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "client_id", nullable = false)

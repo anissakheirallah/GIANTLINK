@@ -20,6 +20,8 @@ public interface ServiceMapper {
 	
 	Set<ServiceResponse> mapService(Set<Service> services);
 	
+	Set<Service> mapRequestToEntity(Set<ServiceRequest> services);
+	
 	Service requestToEntity(ServiceRequest serviceRequest);
 
 	ServiceResponse entityToResponse(Service service);

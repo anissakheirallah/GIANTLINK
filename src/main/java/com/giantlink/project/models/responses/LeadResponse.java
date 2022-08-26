@@ -22,7 +22,7 @@ public class LeadResponse {
 	private CommercialResponse commercial;
 	private ProductResponse product;
 
-	private Set<ServiceResponse> Services;
+	private Set<ServiceResponse> services;
 	
 
 }

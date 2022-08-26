@@ -6,8 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -44,6 +42,14 @@ public class ClientServiceImpl implements ClientService  {
 
 
 	}
+	
+	@Override
+	public void addAnyway(ClientRequest clientRequest) {
+		
+		clientRepository.save(ClientMapper.INSTANCE.requestToEntity(clientRequest));
+		
+	}
+
 
 	@Override
 	public List<ClientResponse> getAll() {
@@ -129,4 +135,5 @@ public class ClientServiceImpl implements ClientService  {
 		return clientMap;
 	}
 
+	
 }

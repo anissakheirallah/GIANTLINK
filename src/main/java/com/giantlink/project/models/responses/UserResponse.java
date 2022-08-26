@@ -27,5 +27,5 @@ public class UserResponse {
 	private Role role;
 	//private Set<TeamResponse> teams;
 
-	private Set<LeadResponse> leads;
+	//private Set<LeadResponse> leads;
 }

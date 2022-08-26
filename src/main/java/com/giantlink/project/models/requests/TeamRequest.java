@@ -15,5 +15,5 @@ public class TeamRequest {
 
 	private String teamName;
 	private Set<UserRequest> team_users;
-	private Long idProject;
+	private Long projectId;
 }

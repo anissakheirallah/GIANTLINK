@@ -6,6 +6,7 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -42,7 +43,8 @@ public class Service {
 	private Boolean statut;
 	// should have idProject ?? there is no relationship between service and project 
 	
-	@ManyToMany
+	@ManyToMany(mappedBy = "services",cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+	@JsonBackReference
 	private Set<Lead> leads;
 	
 	@ManyToOne(cascade = CascadeType.PERSIST)

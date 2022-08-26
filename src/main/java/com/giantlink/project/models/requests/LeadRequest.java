@@ -15,8 +15,9 @@ public class LeadRequest {
 
 	private Long userId;
 	private Long commercialId;
-	private Long clientId;
+	private ClientRequest client;
+	//private Long clientId;
 	private Long productId;
 	
-	private Set<ServiceRequest> Services;
+	private Set<ServiceRequest> services;
 }

@@ -1,5 +1,6 @@
 package com.giantlink.project.controlers;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,14 @@ public class LeadController {
 	{
 		Pageable pageable = PageRequest.of(page, size);
 		return new ResponseEntity<Map<String,Object>>(leadService.getAllPaginations(name, pageable), HttpStatus.OK);
+		
+	}
+	
+	@GetMapping("/all")
+	public ResponseEntity<List<LeadResponse>> getAllAnyway() 
+	{
+		
+		return new ResponseEntity<List<LeadResponse>>(leadService.getAll(), HttpStatus.OK);
 		
 	}
 

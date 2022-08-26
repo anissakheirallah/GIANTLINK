@@ -57,7 +57,7 @@ public class TeamServiceImpl implements TeamService {
 			}
 		}
 		Set<Project> projects = new HashSet<>();
-		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		Team team = Team.builder().teamName(teamRequest.getTeamName()).team_users(users).project(projectSearch.get())
 				.build();
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
@@ -90,7 +90,7 @@ public class TeamServiceImpl implements TeamService {
 		}
 		Set<Project> projects = new HashSet<>();
 
-		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getIdProject());
+		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		/*
 		 * for (ProjectRequest project : teamRequest.getProjects()) { Optional<Project>
 		 * projectSearch =
