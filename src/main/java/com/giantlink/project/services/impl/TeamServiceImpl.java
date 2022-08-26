@@ -40,7 +40,7 @@ public class TeamServiceImpl implements TeamService {
 
 	@Override
 	public TeamResponse addTeam(TeamRequest teamRequest) throws GlNotFoundException, GlAlreadyExistException {
-		Optional<Team> teamSearch = teamRepository.findByteamName(teamRequest.getTeamName());
+		Optional<Team> teamSearch = teamRepository.findByTeamName(teamRequest.getTeamName());
 		if (teamSearch.isPresent()) {
 			throw new GlAlreadyExistException(teamRequest.getTeamName(), Team.class.getSimpleName());
 		}
@@ -62,6 +62,15 @@ public class TeamServiceImpl implements TeamService {
 		if (teamSearch.isEmpty()) {
 			throw new GlNotFoundException("team", Team.class.getSimpleName());
 		} else {
+			for (User user : teamSearch.get().getTeam_users()) {
+				if (user.getTeams().size() <= 1) {
+					if (!user.getTeams().contains(teamRepository.findByTeamName("default_team").get())) {
+						user.getTeams().add(teamRepository.findByTeamName("default_team").get());
+						user.getTeams().remove(teamSearch.get());
+						userRepository.save(user);
+					}
+				}
+			}
 			teamRepository.delete(teamSearch.get());
 		}
 	}

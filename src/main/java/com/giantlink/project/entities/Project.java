@@ -11,9 +11,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -22,7 +23,6 @@ import lombok.Setter;
 @Table(name = "projects")
 @Setter
 @Getter
-@EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -36,7 +36,8 @@ public class Project {
 	private Date startDate;
 	private Date finishDate;
 
-	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)
+	@OneToMany(orphanRemoval = false, mappedBy = "project")
+	@JsonManagedReference
 	private Set<Team> teams;
 
 	@OneToMany(mappedBy = "project", cascade = CascadeType.ALL)

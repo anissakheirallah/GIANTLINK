@@ -77,6 +77,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 				throw new GlNotFoundException("role", Role.class.getSimpleName());
 			}
 			Set<Team> teams = new HashSet<>();
+			for (Long idTeam : userRequest.getIdTeams()) {
+				Optional<Team> team = teamRepository.findById(idTeam);
+				if (team.isEmpty()) {
+					throw new GlNotFoundException("team", Team.class.getSimpleName());
+				}
+				teams.add(team.get());
+			}
 			User us = UserMapper.INSTANCE.mapRequest(userRequest);
 
 			us.setPassword(encoder.encode(userRequest.getPassword()));
@@ -108,13 +115,24 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 			if (role.isEmpty()) {
 				throw new GlNotFoundException("role", Role.class.getSimpleName());
 			}
-
+			Set<Team> teams = new HashSet<>();
+			for (Long idTeam : userRequest.getIdTeams()) {
+				Optional<Team> team = teamRepository.findById(idTeam);
+				if (team.isEmpty()) {
+					throw new GlNotFoundException("team", Team.class.getSimpleName());
+				}
+				teams.add(team.get());
+			}
+			if (teams.size() > 0) {
+				userSearch.get().getTeams().remove(teamRepository.findByTeamName("default_team").get());
+			}
 			userSearch.get().setFirstName(userRequest.getFirstName());
 			userSearch.get().setLastName(userRequest.getLastName());
 			userSearch.get().setPassword(encoder.encode(userRequest.getPassword()));
 			userSearch.get().setUserName(userRequest.getUserName());
 			userSearch.get().setLanguage(userRequest.getLanguage());
 			userSearch.get().setRole(role.get());
+			userSearch.get().setTeams(teams);
 
 			return UserMapper.INSTANCE.mapEntity(userRepository.save(userSearch.get()));
 		}

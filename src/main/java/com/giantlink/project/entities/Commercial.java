@@ -30,23 +30,21 @@ import lombok.Setter;
 @AllArgsConstructor
 @Builder
 public class Commercial {
-	
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String commercialName;
 	private Boolean statut;
-	//private Long idCalendar;
+	// private Long idCalendar;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-	
-	
-	@OneToMany(mappedBy = "commercial",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+
+	@OneToMany(mappedBy = "commercial", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	private Set<Lead> leads;
-	
-	
+
 	@PrePersist
 	private void onCreate() {
 		this.timestamp = new Date();

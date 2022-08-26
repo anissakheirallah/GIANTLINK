@@ -11,9 +11,11 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Project;
+import com.giantlink.project.entities.Team;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.ProjectMapper;
@@ -24,6 +26,7 @@ import com.giantlink.project.repositories.TeamRepository;
 import com.giantlink.project.services.ProjectService;
 
 @Service
+@Async
 public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
@@ -57,11 +60,19 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public void deleteProject(Long id) throws GlNotFoundException {
 		Optional<Project> projectSearch = projectRepository.findById(id);
+		Project defaultProject = projectRepository.findByProjectName("default_project").get();
 		if (projectSearch.isEmpty()) {
 			throw new GlNotFoundException("project", Project.class.getSimpleName());
-		} else {
-			projectRepository.delete(projectSearch.get());
 		}
+
+		if (!projectSearch.get().getTeams().isEmpty()) {
+			for (Team team : projectSearch.get().getTeams()) {
+				System.out.println(team.getTeamName());
+				team.setProject(defaultProject);
+				teamRepository.save(team);
+			}
+		}
+		projectRepository.delete(projectSearch.get());
 	}
 
 	@Override
