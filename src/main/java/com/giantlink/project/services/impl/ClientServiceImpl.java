@@ -43,12 +43,7 @@ public class ClientServiceImpl implements ClientService  {
 
 	}
 	
-	@Override
-	public void addAnyway(ClientRequest clientRequest) {
-		
-		clientRepository.save(ClientMapper.INSTANCE.requestToEntity(clientRequest));
-		
-	}
+	
 
 
 	@Override

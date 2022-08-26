@@ -1,6 +1,6 @@
 package com.giantlink.project.models.responses;
 
-import java.util.Set;
+import java.util.Date;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -8,15 +8,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TeamResponse {
-
+public class AppointmentResponse {
 	private Long id;
-	private String teamName;
-	private Set<UserResponse> team_users;
-	private ProjectResponse project;
+
+	private Date appointmentDate;
+
+	private Date appointmentTime;
 }

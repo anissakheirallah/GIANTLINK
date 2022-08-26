@@ -20,6 +20,6 @@ public class UserRequest {
 	private String language;
 
 	private Long idRole;
-	private Set<TeamRequest> teams;
-	private Set<LeadRequest> leads;
+
+	private Set<Long> idTeams;
 }

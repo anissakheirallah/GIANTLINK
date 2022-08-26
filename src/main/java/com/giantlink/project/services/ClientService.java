@@ -13,8 +13,6 @@ import com.giantlink.project.models.responses.ClientResponse;
 public interface ClientService {
 	
 	ClientResponse add(ClientRequest clientRequest) throws GlAlreadyExistException, GlNotFoundException;
-	
-	void addAnyway(ClientRequest clientRequest);
 
 	List<ClientResponse> getAll();
 

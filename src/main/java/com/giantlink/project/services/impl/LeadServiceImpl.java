@@ -18,6 +18,7 @@ import com.giantlink.project.entities.Service;
 import com.giantlink.project.entities.User;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
+import com.giantlink.project.mappers.ClientMapper;
 import com.giantlink.project.mappers.LeadMapper;
 import com.giantlink.project.models.requests.LeadRequest;
 import com.giantlink.project.models.requests.ServiceRequest;
@@ -52,19 +53,12 @@ public class LeadServiceImpl implements LeadService {
 	@Autowired
 	private CommercialRepository commercialRepository;
 
-	@Autowired
-	private ClientService clientService;
 
 	@Transactional
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
 
 		// can the client have the same lead twice ??
-		System.out.println(leadRequest.getCommercialId());
-		System.out.println(leadRequest.getProductId());
-		System.out.println(leadRequest.getServices());
-		System.out.println(leadRequest.getUserId());
-		System.out.println(leadRequest.getClient());
 
 		// check user
 		Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
@@ -73,15 +67,11 @@ public class LeadServiceImpl implements LeadService {
 		}
 
 		// check client
-		// Optional<Client> findClient =
-		// clientRepository.findById(leadRequest.getClientId());
+		// Optional<Client> findClient = clientRepository.findById(leadRequest.getClientId());
 		// if (!findClient.isPresent()) {
-		// throw new GlNotFoundException(leadRequest.getClientId().toString(),
-		// Client.class.getSimpleName());
+		// throw new GlNotFoundException(leadRequest.getClientId().toString(),Client.class.getSimpleName());
 		// }
 
-		// ClientRequest client = leadRequest.getClientRequest();
-		// clientService.addAnyway(client);
 
 		// check commercial
 		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
@@ -94,15 +84,14 @@ public class LeadServiceImpl implements LeadService {
 			throw new GlNotFoundException(leadRequest.getProductId().toString(), Product.class.getSimpleName());
 		}
 
-		// Client client =
-		// clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient()));
+		
 
 		Lead lead = LeadMapper.INSTANCE.requestToEntity(leadRequest);
 		lead.setCommercial(findCommercial.get());
 		lead.setProduct(findProduct.get());
 		// lead.setClient(findClient.get());
-		// lead.setClient(client);
-		// lead.setUser(findUser.get());
+		lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
+		lead.setUser(findUser.get());
 
 		// check service
 		Set<Service> services = new HashSet<>();
@@ -119,8 +108,8 @@ public class LeadServiceImpl implements LeadService {
 
 		lead.setServices(services);
 
-		// return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
-		return null;
+		return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
+		
 	}
 
 	@Override

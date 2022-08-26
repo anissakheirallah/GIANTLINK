@@ -24,5 +24,6 @@ public class LeadResponse {
 
 	private Set<ServiceResponse> services;
 	
+	private AppointmentResponse appointmentResponse;
 
 }

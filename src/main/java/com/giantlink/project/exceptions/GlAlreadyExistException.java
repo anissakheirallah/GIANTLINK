@@ -10,7 +10,7 @@ public class GlAlreadyExistException extends Exception {
 	private static final long serialVersionUID = 1L;
 
 	public GlAlreadyExistException(String entityNameAttribut, String entityName) {
-		super(entityNameAttribut + " " + entityName + " Already exist !");
+		super(entityName + " " + entityNameAttribut + " Already exist !");
 		this.entityNameAttribut = entityNameAttribut;
 	}
 

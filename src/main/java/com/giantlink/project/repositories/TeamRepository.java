@@ -10,5 +10,5 @@ import com.giantlink.project.entities.Team;
 @Repository
 public interface TeamRepository extends JpaRepository<Team, Long> {
 
-	Optional<Team> findByteamName(String teamName);
+	Optional<Team> findByTeamName(String teamName);
 }
