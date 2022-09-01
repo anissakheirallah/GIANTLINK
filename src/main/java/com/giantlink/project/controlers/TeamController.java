@@ -49,6 +49,13 @@ public class TeamController {
 		return new ResponseEntity<TeamResponse>(teamService.getTeam(id), HttpStatus.OK);
 	}
 
+	@PutMapping("/status/{id}")
+	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestParam Boolean status)
+			throws GlNotFoundException {
+		teamService.changeStatus(id, status);
+		return new ResponseEntity<String>("status changed!", HttpStatus.OK);
+	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException {
 		teamService.deleteTeam(id);
@@ -65,7 +72,7 @@ public class TeamController {
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(teamService.getAllPaginations(pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(teamService.getAllPaginations(name, pageable), HttpStatus.OK);
 	}
 
 }

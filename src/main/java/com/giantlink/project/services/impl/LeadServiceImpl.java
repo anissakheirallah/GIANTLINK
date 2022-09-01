@@ -1,5 +1,7 @@
 package com.giantlink.project.services.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -9,6 +11,7 @@ import java.util.Set;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import com.giantlink.project.entities.Commercial;
@@ -52,7 +55,6 @@ public class LeadServiceImpl implements LeadService {
 	@Autowired
 	private CommercialRepository commercialRepository;
 
-
 	@Transactional
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
@@ -61,16 +63,17 @@ public class LeadServiceImpl implements LeadService {
 
 		// check user
 		Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
-		if (findUser.isEmpty()) {
+		if (!findUser.isPresent()) {
 			throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
 		}
 
 		// check client
-		// Optional<Client> findClient = clientRepository.findById(leadRequest.getClientId());
+		// Optional<Client> findClient =
+		// clientRepository.findById(leadRequest.getClientId());
 		// if (!findClient.isPresent()) {
-		// throw new GlNotFoundException(leadRequest.getClientId().toString(),Client.class.getSimpleName());
+		// throw new
+		// GlNotFoundException(leadRequest.getClientId().toString(),Client.class.getSimpleName());
 		// }
-
 
 		// check commercial
 		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
@@ -106,7 +109,7 @@ public class LeadServiceImpl implements LeadService {
 		lead.setServices(services);
 
 		return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
-		
+
 	}
 
 	@Override
@@ -143,14 +146,73 @@ public class LeadServiceImpl implements LeadService {
 
 	@Override
 	public LeadResponse update(Long id, LeadRequest leadRequest) throws GlNotFoundException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		Optional<Lead> findLead = leadRepository.findById(id);
+		if (!findLead.isPresent()) {
+			throw new GlNotFoundException(id.toString(), Lead.class.getSimpleName());
+		}
+
+		// check user
+				Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
+				if (!findUser.isPresent()) {
+					throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
+				}
+
+				// check commercial
+				Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
+				if (!findCommercial.isPresent()) {
+					throw new GlNotFoundException(leadRequest.getCommercialId().toString(), Commercial.class.getSimpleName());
+				}
+				
+				// check product
+				Optional<Product> findProduct = productRepository.findById(leadRequest.getProductId());
+				if (!findProduct.isPresent()) {
+					throw new GlNotFoundException(leadRequest.getProductId().toString(), Product.class.getSimpleName());
+				}
+
+				Lead lead = findLead.get();
+				lead.setCommercial(findCommercial.get());
+				lead.setProduct(findProduct.get());
+				// lead.setClient(findClient.get());
+				lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
+				lead.setUser(findUser.get());
+
+				// check service
+				Set<Service> services = new HashSet<>();
+				Set<ServiceRequest> serviceRequests = leadRequest.getServices();
+				if (serviceRequests == null || serviceRequests.isEmpty()) {
+					throw new GlNotFoundException("list is empty", Service.class.getSimpleName());
+				}
+				for (ServiceRequest service : serviceRequests) {
+					Optional<Service> findService = serviceRepository.findByServiceName(service.getServiceName());
+					if (findService.isPresent()) {
+						services.add(findService.get());
+					}
+				}
+
+				lead.setServices(services);
+				
+				lead.setAppointmentDate(leadRequest.getAppointmentDate());
+				lead.setAppointmentTime(leadRequest.getAppointmentTime());
+
+				return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
 	}
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
+		List<LeadResponse> leadResponses = new ArrayList<>();
+		Page<Lead> leads = leadRepository.findAll(pageable);
 
-		return null;
+		leads.getContent().forEach(lead -> {
+			leadResponses.add(LeadMapper.INSTANCE.entityToResponse(lead));
+		});
+
+		Map<String, Object> requestResponse = new HashMap<>();
+		requestResponse.put("content", leadResponses);
+		requestResponse.put("currentPage", leads.getNumber());
+		requestResponse.put("totalElements", leads.getTotalElements());
+		requestResponse.put("totalPages", leads.getTotalPages());
+		return requestResponse;
 
 	}
 

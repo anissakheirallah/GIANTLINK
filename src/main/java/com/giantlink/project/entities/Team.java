@@ -32,6 +32,7 @@ public class Team {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String teamName;
+	private Boolean status;
 
 	@ManyToMany(mappedBy = "teams")
 	private Set<User> team_users;

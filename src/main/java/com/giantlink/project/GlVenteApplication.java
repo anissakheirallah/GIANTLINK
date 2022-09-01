@@ -47,13 +47,13 @@ public class GlVenteApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		// insert default project
 		Project pr = Project.builder().projectName("default_project").projectType("default").startDate(new Date())
-				.finishDate(new Date()).build();
+				.finishDate(new Date()).status(true).build();
 		if (projectRepository.findByProjectName("default_project").isEmpty()) {
 			projectRepository.save(pr);
 		}
 
 		// insert default team
-		Team tm = Team.builder().teamName("default_team").project(pr).build();
+		Team tm = Team.builder().teamName("default_team").status(true).project(pr).build();
 		if (teamRepository.findByTeamName("default_team").isEmpty()) {
 			teamRepository.save(tm);
 		}

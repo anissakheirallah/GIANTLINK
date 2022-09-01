@@ -196,9 +196,10 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 	}
 
 	@Override
-	public Map<String, Object> getAllPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
 		List<UserResponse> usersResponses = new ArrayList<>();
-		Page<User> users = userRepository.findAll(pageable);
+		Page<User> users = (name.isBlank()) ? userRepository.findAll(pageable)
+				: userRepository.findByUserName(name, pageable);
 
 		users.getContent().forEach(user -> {
 			usersResponses.add(UserMapper.INSTANCE.mapEntity(user));

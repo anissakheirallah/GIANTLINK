@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 public class TeamRequest {
 
 	private String teamName;
+	private Boolean status;
 	private Set<UserRequest> team_users;
 	private Long projectId;
+
 }

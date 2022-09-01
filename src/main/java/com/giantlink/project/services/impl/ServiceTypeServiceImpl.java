@@ -31,10 +31,10 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 	public ServiceTypeResponse add(ServiceTypeRequest serviceTypeRequest)
 			throws GlAlreadyExistException, GlNotFoundException {
 
-		Optional<ServiceType> findType = typeRepository.findBylibelle(serviceTypeRequest.getLibelle());
+		Optional<ServiceType> findType = typeRepository.findByLabel(serviceTypeRequest.getLabel());
 
 		if (findType.isPresent()) {
-			throw new GlAlreadyExistException(serviceTypeRequest.getLibelle(), ServiceType.class.getSimpleName());
+			throw new GlAlreadyExistException(serviceTypeRequest.getLabel(), ServiceType.class.getSimpleName());
 		}
 		return ServiceTypeMapper.INSTANCE
 				.entityToResponse(typeRepository.save(ServiceTypeMapper.INSTANCE.requestToEntity(serviceTypeRequest)));
@@ -82,7 +82,7 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 
 		ServiceType serviceType = typeRepository.findById(id).get();
 
-		serviceType.setLibelle(serviceTypeRequest.getLibelle());
+		serviceType.setLabel(serviceTypeRequest.getLabel());
 
 		typeRepository.save(serviceType);
 
@@ -95,9 +95,9 @@ public class ServiceTypeServiceImpl implements ServiceTypeService {
 
 		List<ServiceTypeResponse> typeList = new ArrayList<>();
 		Page<ServiceType> types = (name.isBlank()) ? typeRepository.findAll(pageable)
-				: typeRepository.findBylibelleContainingIgnoreCase(name, pageable);
+				: typeRepository.findByLabelContainingIgnoreCase(name, pageable);
 		types.getContent().forEach(type -> {
-			ServiceTypeResponse response = ServiceTypeResponse.builder().id(type.getId()).libelle(type.getLibelle())
+			ServiceTypeResponse response = ServiceTypeResponse.builder().id(type.getId()).label(type.getLabel())
 					.services(ServiceMapper.INSTANCE.mapService(type.getServices())).build();
 
 			typeList.add(response);

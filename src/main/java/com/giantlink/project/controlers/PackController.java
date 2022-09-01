@@ -1,6 +1,5 @@
 package com.giantlink.project.controlers;
 
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,52 +20,47 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
-import com.giantlink.project.models.requests.LeadRequest;
-import com.giantlink.project.models.responses.LeadResponse;
-import com.giantlink.project.services.LeadService;
+import com.giantlink.project.models.requests.PackRequest;
+import com.giantlink.project.models.responses.PackResponse;
+import com.giantlink.project.services.PackService;
 
 @RestController
-@RequestMapping("/api/lead")
+@RequestMapping("/api/pack")
 @CrossOrigin(origins = { "http://localhost:4200" })
-public class LeadController {
-	
+public class PackController {
+
 	@Autowired
-	private LeadService leadService;
+	PackService packService;
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
-													  @RequestParam(defaultValue = "2") int size,
-													  @RequestParam(defaultValue = "", name = "name") String name) 
-	{
+			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String,Object>>(leadService.getAllPaginations(name, pageable), HttpStatus.OK);
-		
+		return new ResponseEntity<Map<String, Object>>(packService.getAllPaginations(name, pageable), HttpStatus.OK);
+
 	}
-	
-	
 
 	@PostMapping
-	public ResponseEntity<LeadResponse> add(@RequestBody LeadRequest leadRequest)
-			throws GlNotFoundException,GlAlreadyExistException {
-		return new ResponseEntity<LeadResponse>(leadService.add(leadRequest), HttpStatus.CREATED);
+	public ResponseEntity<PackResponse> add(@RequestBody PackRequest packRequest)
+			throws GlNotFoundException, GlAlreadyExistException {
+		return new ResponseEntity<PackResponse>(packService.add(packRequest), HttpStatus.CREATED);
 	}
-	
+
 	@GetMapping("/{id}")
-	public ResponseEntity<LeadResponse> getOne(@PathVariable Long id) throws GlNotFoundException {
-		return new ResponseEntity<LeadResponse>(leadService.get(id), HttpStatus.OK);
+	public ResponseEntity<PackResponse> getOne(@PathVariable Long id) throws GlNotFoundException {
+		return new ResponseEntity<PackResponse>(packService.get(id), HttpStatus.OK);
 	}
-	
+
 	@DeleteMapping("/{id}")
-	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException{
-		leadService.delete(id);
+	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException {
+		packService.delete(id);
 		return new ResponseEntity<String>("deleted !", HttpStatus.OK);
 	}
-	
 
 	@PutMapping("/{id}")
-	public ResponseEntity<LeadResponse> edit(@PathVariable("id") Long id, @RequestBody LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException  {
-		return new ResponseEntity<LeadResponse>(leadService.update(id, leadRequest), HttpStatus.OK);
+	public ResponseEntity<PackResponse> edit(@PathVariable("id") Long id, @RequestBody PackRequest packRequest)
+			throws GlAlreadyExistException, GlNotFoundException {
+		return new ResponseEntity<PackResponse>(packService.update(id, packRequest), HttpStatus.OK);
 	}
-
 
 }

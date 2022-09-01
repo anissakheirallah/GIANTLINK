@@ -1,5 +1,6 @@
 package com.giantlink.project.models.requests;
 
+import java.util.Date;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -16,8 +17,13 @@ public class LeadRequest {
 	private Long userId;
 	private Long commercialId;
 	private ClientRequest client;
-	//private Long clientId;
+	// private Long clientId;
 	private Long productId;
-	
+
 	private Set<ServiceRequest> services;
+
+	private Date appointmentDate;
+
+	private Date appointmentTime;
+
 }

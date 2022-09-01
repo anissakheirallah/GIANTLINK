@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 public class ServiceTypeRequest {
 	
 	
-	private String libelle;
+	private String label;
 
 }

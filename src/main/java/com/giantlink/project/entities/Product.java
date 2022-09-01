@@ -30,26 +30,21 @@ import lombok.Setter;
 @Builder
 public class Product {
 
-	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	private String productName;
-	
-	
-	
+
 	@OneToMany(mappedBy = "product", fetch = FetchType.EAGER)
 	private Set<Lead> leads;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-	
+
 	@PrePersist
 	private void onCreate() {
 		this.timestamp = new Date();
 	}
-	
-	
-	
+
 }

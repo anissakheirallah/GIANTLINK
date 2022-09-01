@@ -1,22 +1,19 @@
 package com.giantlink.project.models.responses;
 
-import java.util.Date;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Setter
 @Getter
-@Builder
-@NoArgsConstructor
+@Setter
 @AllArgsConstructor
-public class AppointmentResponse {
-	private Long id;
+@NoArgsConstructor
+@Builder
+public class PackResponse {
+	private long id;
+	private String packName;
+	private ProjectResponse project;
 
-	private Date appointmentDate;
-
-	private Date appointmentTime;
 }

@@ -12,8 +12,8 @@ import com.giantlink.project.entities.ServiceType;
 @Repository
 public interface ServiceTypeRepository extends JpaRepository<ServiceType, Long> {
 
-	Optional<ServiceType> findBylibelle(String libelle);
+	Optional<ServiceType> findByLabel(String label);
 
-	Page<ServiceType> findBylibelleContainingIgnoreCase(String name, Pageable pageable);
+	Page<ServiceType> findByLabelContainingIgnoreCase(String name, Pageable pageable);
 
 }

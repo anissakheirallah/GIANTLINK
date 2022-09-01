@@ -10,7 +10,7 @@ import lombok.Data;
 public class ServiceTypeResponse {
 	
 	private Long id;
-	private String libelle;
+	private String label;
 	
 	private Set<ServiceResponse> services;
 

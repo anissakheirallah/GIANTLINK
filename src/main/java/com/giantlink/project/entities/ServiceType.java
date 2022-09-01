@@ -29,7 +29,7 @@ public class ServiceType {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
-	private String libelle;
+	private String label;
 	
 	@OneToMany(mappedBy = "serviceType",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
 	private Set<Service> services;

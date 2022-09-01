@@ -3,6 +3,7 @@ package com.giantlink.project.entities;
 import java.util.Date;
 import java.util.Set;
 
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,7 +14,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -39,6 +39,14 @@ public class Lead {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
+	
+
+	@Temporal(TemporalType.DATE)
+	private Date appointmentDate;
+
+	@Basic
+	@Temporal(TemporalType.TIME)
+	private Date appointmentTime;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "user_id", nullable = false)
@@ -50,11 +58,6 @@ public class Lead {
 	@JsonBackReference
 	private Commercial commercial;
 
-	/*
-	 * @OneToMany(mappedBy = "lead",fetch=FetchType.EAGER) private Set<Option>
-	 * options; //private String options;
-	 */
-
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "product_id", nullable = false)
 	@JsonBackReference
@@ -62,7 +65,6 @@ public class Lead {
 
 	@ManyToMany(fetch = FetchType.EAGER)
 	private Set<Service> services;
-
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "client_id", nullable = false)
@@ -72,9 +74,6 @@ public class Lead {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
 	private Date timestamp;
-
-	@OneToOne(cascade = CascadeType.ALL)
-	private Appointment appointment;
 
 	@PrePersist
 	private void onCreate() {

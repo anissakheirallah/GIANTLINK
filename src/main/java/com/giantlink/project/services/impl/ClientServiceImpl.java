@@ -30,7 +30,6 @@ public class ClientServiceImpl implements ClientService  {
 	@Override
 	public ClientResponse add(ClientRequest clientRequest) throws GlAlreadyExistException, GlNotFoundException {
 
-		//here as ayoub say we should not check if the client is already exist .. we can just add it as a new one
 		
 		Optional<Client> findClient = clientRepository.findByLastName(clientRequest.getLastName());
 

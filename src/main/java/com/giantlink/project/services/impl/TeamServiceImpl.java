@@ -51,6 +51,7 @@ public class TeamServiceImpl implements TeamService {
 		}
 
 		Team team = TeamMapper.INSTANCE.mapRequest(teamRequest);
+		team.setStatus(true);
 		team.setProject(projectSearch.get());
 
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(team));
@@ -82,18 +83,10 @@ public class TeamServiceImpl implements TeamService {
 			throw new GlNotFoundException("team", Team.class.getSimpleName());
 		}
 		Set<User> users = new HashSet<>();
-
-//		for (UserRequest Sup : teamRequest.getTeam_users()) {
-//			Optional<User> userSearch = userRepository.findByUserName(Sup.getUserName());
-//			if (userSearch.isEmpty()) {
-//				throw new GlNotFoundException(Sup.getUserName(), User.class.getSimpleName());
-//			} else {
-//				users.add(userSearch.get());
-//			}
-//		}
-
+		
 		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		teamSearch.get().setProject(projectSearch.get());
+		teamSearch.get().setStatus(teamRequest.getStatus());
 		teamSearch.get().setTeam_users(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(teamSearch.get()));
@@ -115,9 +108,10 @@ public class TeamServiceImpl implements TeamService {
 	}
 
 	@Override
-	public Map<String, Object> getAllPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
 		List<TeamResponse> teamResponses = new ArrayList<>();
-		Page<Team> teams = teamRepository.findAll(pageable);
+		Page<Team> teams = (name.isBlank()) ? teamRepository.findAll(pageable)
+				: teamRepository.findByTeamName(name, pageable);
 
 		teams.getContent().forEach(team -> {
 			teamResponses.add(TeamMapper.INSTANCE.mapEntity(team));
@@ -130,5 +124,16 @@ public class TeamServiceImpl implements TeamService {
 		requestResponse.put("totalPages", teams.getTotalPages());
 		return requestResponse;
 	}
+
+	@Override
+	public void changeStatus(Long id, Boolean status) throws GlNotFoundException {
+		Optional<Team> team = teamRepository.findById(id);
+		if (team.isEmpty()) {
+			throw new GlNotFoundException("team", Team.class.getSimpleName());
+		}
+		team.get().setStatus(status);
+		teamRepository.save(team.get());
+	}
+
 
 }

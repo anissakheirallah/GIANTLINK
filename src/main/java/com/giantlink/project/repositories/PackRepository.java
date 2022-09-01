@@ -7,12 +7,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.giantlink.project.entities.Team;
+import com.giantlink.project.entities.Pack;
 
 @Repository
-public interface TeamRepository extends JpaRepository<Team, Long> {
+public interface PackRepository extends JpaRepository<Pack, Long> {
 
-	Optional<Team> findByTeamName(String teamName);
+	Optional<Pack> findByPackName(String packName);
 
-	Page<Team> findByTeamName(String teamName, Pageable pageable);
+	Page<Pack> findByPackName(String packName, Pageable pageable);
 }

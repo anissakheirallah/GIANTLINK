@@ -1,5 +1,6 @@
 package com.giantlink.project.models.responses;
 
+import java.util.Date;
 import java.util.Set;
 
 import lombok.AllArgsConstructor;
@@ -23,7 +24,9 @@ public class LeadResponse {
 	private ProductResponse product;
 
 	private Set<ServiceResponse> services;
-	
-	private AppointmentResponse appointmentResponse;
+
+	private Date appointmentDate;
+
+	private Date appointmentTime;
 
 }
