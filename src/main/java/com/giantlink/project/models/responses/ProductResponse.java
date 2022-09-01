@@ -21,5 +21,5 @@ public class ProductResponse {
 	private String productName;
 	
 
-	private Set<LeadResponse> leads;
+	//private Set<LeadResponse> leads;
 }

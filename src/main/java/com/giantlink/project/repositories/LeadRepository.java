@@ -8,6 +8,8 @@ import com.giantlink.project.entities.Lead;
 @Repository
 public interface LeadRepository extends JpaRepository<Lead, Long>{
 	
+
+	
 	
 
 }

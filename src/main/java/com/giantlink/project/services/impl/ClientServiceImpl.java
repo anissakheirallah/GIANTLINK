@@ -42,6 +42,9 @@ public class ClientServiceImpl implements ClientService  {
 
 
 	}
+	
+	
+
 
 	@Override
 	public List<ClientResponse> getAll() {
@@ -127,4 +130,5 @@ public class ClientServiceImpl implements ClientService  {
 		return clientMap;
 	}
 
+	
 }
