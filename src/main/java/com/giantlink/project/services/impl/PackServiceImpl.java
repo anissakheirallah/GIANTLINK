@@ -64,7 +64,7 @@ public class PackServiceImpl implements PackService {
 	@Override
 	public void delete(Long id) throws GlNotFoundException {
 		Optional<Pack> findPack = packRepository.findById(id);
-		if (findPack.isPresent()) {
+		if (findPack.isEmpty()) {
 			throw new GlNotFoundException("pack", Pack.class.getSimpleName());
 		}
 		packRepository.delete(findPack.get());

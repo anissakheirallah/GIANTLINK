@@ -86,6 +86,7 @@ public class TeamServiceImpl implements TeamService {
 		
 		Optional<Project> projectSearch = projectRepository.findById(teamRequest.getProjectId());
 		teamSearch.get().setProject(projectSearch.get());
+		teamSearch.get().setStatus(teamRequest.getStatus());
 		teamSearch.get().setTeam_users(users);
 		teamSearch.get().setTeamName(teamRequest.getTeamName());
 		return TeamMapper.INSTANCE.mapEntity(teamRepository.save(teamSearch.get()));

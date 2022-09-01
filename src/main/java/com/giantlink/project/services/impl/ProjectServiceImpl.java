@@ -73,6 +73,7 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		projectSearch.get().setProjectName(projectRequest.getProjectName());
 		projectSearch.get().setProjectType(projectRequest.getProjectType());
+		projectSearch.get().setStatus(projectRequest.getStatus());
 		projectSearch.get().setStartDate(projectRequest.getStartDate());
 		projectSearch.get().setFinishDate(projectRequest.getFinishDate());
 		return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(projectSearch.get()));
