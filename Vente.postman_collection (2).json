@@ -1,16 +1,9 @@
 {
 	"info": {
-<<<<<<< HEAD
 		"_postman_id": "20712f1a-de41-4d53-9f61-eda4a85eb07f",
 		"name": "Vente",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "20372154"
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
-		"_postman_id": "bfaeae50-356a-4cc1-9b48-a8188f920f94",
-		"name": "Vente",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "20719860"
 	},
 	"item": [
 		{
@@ -527,7 +520,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"userId\":9,\r\n    \"commercialId\":3,\r\n    \"clientId\":2,\r\n    \"productId\":1,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.20,\r\n            \"statut\": true,\r\n            \"serviceTypeId\": 4\r\n        }\r\n    ]\r\n}",
+							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 8,\r\n    \"userId\": 7,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.25,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -575,7 +568,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8094/api/lead/1",
+							"raw": "http://localhost:8094/api/lead/38",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -584,7 +577,7 @@
 							"path": [
 								"api",
 								"lead",
-								"1"
+								"38"
 							]
 						}
 					},
@@ -597,7 +590,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "",
+							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 8,\r\n    \"userId\": 7,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.25,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -605,7 +598,7 @@
 							}
 						},
 						"url": {
-							"raw": "http://localhost:8094/api/lead/8",
+							"raw": "http://localhost:8094/api/lead/38",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -614,7 +607,7 @@
 							"path": [
 								"api",
 								"lead",
-								"8"
+								"38"
 							]
 						}
 					},
@@ -626,7 +619,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-							"raw": "http://localhost:8094/api/lead/8",
+							"raw": "http://localhost:8094/api/lead/42",
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -635,7 +628,7 @@
 							"path": [
 								"api",
 								"lead",
-								"8"
+								"42"
 							]
 						}
 					},
@@ -653,7 +646,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"serviceName\": \"service two\",\r\n\t\"point\": 0.20,\r\n\t\"statut\": true,\r\n\t\"serviceTypeId\": 4\r\n}",
+							"raw": "{\r\n    \"serviceName\": \"service three\",\r\n\t\"point\": 0.25,\r\n\t\"statut\": true,\r\n\t\"serviceTypeId\": 10\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -779,7 +772,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"libelle\": \"B2B\"\r\n}",
+							"raw": "{\r\n    \"label\": \"c2c\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -903,46 +896,9 @@
 			]
 		},
 		{
-<<<<<<< HEAD
-			"name": "Formule",
-			"item": []
-		},
-		{
-			"name": "Appointment",
-
-			"item": [
-				{
-					"name": "GetAll",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-							"raw": "http://localhost:8094/api/appointment",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8094",
-							"path": [
-								"api",
-								"appointment"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
 			"name": "User",
 			"item": [
 				{
-					"name": "GETbyUsername",
-=======
-			"name": "User",
-			"item": [
-				{
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 					"name": "Add",
 					"request": {
 						"method": "POST",
@@ -1046,16 +1002,6 @@
 					"response": []
 				},
 				{
-<<<<<<< HEAD
-					"name": "Add",
-					"request": {
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"firstName\": \"marouane\",\r\n    \"lastName\": \"Gl\",\r\n    \"userName\": \"marouane@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"language\": \"fr\",\r\n    \"idRole\": 1,\r\n    \"teams\": [\r\n        {\r\n            \"teamName\": \"orange\",\r\n            \"Sups\": null,\r\n            \"Projects\": null\r\n        }\r\n    ],\r\n    \"leads\": null\r\n}",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 					"name": "Delete",
 					"request": {
 						"method": "DELETE",
@@ -1093,11 +1039,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-<<<<<<< HEAD
-							"raw": "{\r\n    \"firstName\": \"Marouane\",\r\n    \"lastName\": \"Tarhouti\",\r\n    \"userName\": \"marouane@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"language\": \"fr\",\r\n    \"idRole\": 3\r\n}",
-=======
 							"raw": "{\r\n    \"firstName\": \"ghizlane\",\r\n    \"lastName\": \"el kerroumi\",\r\n    \"userName\": \"ghizlane@gmail.com\",\r\n    \"password\": \"123456\",\r\n    \"language\": \"fr\",\r\n    \"idRole\": 3,\r\n    \"idTeams\":[18]\r\n}",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1105,12 +1047,7 @@
 							}
 						},
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/user",
-							"raw": "http://localhost:8094/api/user/10",
-=======
 							"raw": "http://localhost:8094/api/user/17",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1118,24 +1055,14 @@
 							"port": "8094",
 							"path": [
 								"api",
-<<<<<<< HEAD
-								"user"
-								"user",
-								"10"
-=======
 								"user",
 								"17"
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							]
 						}
 					},
 					"response": []
 				},
 				{
-<<<<<<< HEAD
-					"name": "Get",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 					"name": "GetById",
 					"request": {
 						"auth": {
@@ -1151,12 +1078,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/user?page=0&size=10&name",
-							"raw": "http://localhost:8094/api/user/10",
-=======
 							"raw": "http://localhost:8094/api/user/17",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1164,28 +1086,8 @@
 							"port": "8094",
 							"path": [
 								"api",
-<<<<<<< HEAD
-								"user"
-							],
-							"query": [
-								{
-									"key": "page",
-									"value": "0"
-								},
-								{
-									"key": "size",
-									"value": "10"
-								},
-								{
-									"key": "name",
-									"value": ""
-								}
-								"user",
-								"10"
-=======
 								"user",
 								"17"
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							]
 						}
 					},
@@ -1206,12 +1108,7 @@
 							"urlencoded": [
 								{
 									"key": "username",
-<<<<<<< HEAD
-									"value": "brem@gmail.com",
-									"value": "marouane@gmail.com",
-=======
 									"value": "admin",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 									"type": "text"
 								},
 								{
@@ -1222,10 +1119,6 @@
 							]
 						},
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/login",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"raw": "http://localhost:8094/login",
 							"protocol": "http",
 							"host": [
@@ -1233,10 +1126,6 @@
 							],
 							"port": "8094",
 							"path": [
-<<<<<<< HEAD
-								"api",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 								"login"
 							]
 						}
@@ -1254,10 +1143,6 @@
 							"bearer": [
 								{
 									"key": "token",
-<<<<<<< HEAD
-									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJicmVtQGdtYWlsLmNvbSIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo4MDk0L2FwaS9sb2dpbiIsImV4cCI6MTY1OTYwMjM5OH0.y3Es88d_SETspwW1G3-7AyrWSMG7tbQGbdEtdRRRu8A",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJtYXJvdWFuZUBnbWFpbC5jb20iLCJyb2xlcyI6WyJST0xFX0FETUlOIl0sImlzcyI6Imh0dHA6Ly9sb2NhbGhvc3Q6ODA5NC9sb2dpbiIsImV4cCI6MTY2MTQyMDAyM30.4n6g-tkfSl4zfyuOxTZGdC_i8m75MM5Pl4soWUZNBDc",
 									"type": "string"
 								}
@@ -1337,30 +1222,6 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/project/all",
-							"protocol": "http",
-							"host": [
-								"localhost"
-							],
-							"port": "8094",
-							"path": [
-								"api",
-								"project",
-								"all"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "Get",
-					"request": {
-						"method": "GET",
-						"header": [],
-						"url": {
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"raw": "http://localhost:8094/api/project",
 							"protocol": "http",
 							"host": [
@@ -1499,10 +1360,6 @@
 					"response": []
 				},
 				{
-<<<<<<< HEAD
-					"name": "Get",
-=======
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 					"name": "GetAll",
 					"request": {
 						"method": "GET",
@@ -1546,12 +1403,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-<<<<<<< HEAD
-							"raw": "{\r\n    \"teamName\": \"test-team\",\r\n    \"projectId\": 1\r\n}",
-							"raw": "{\r\n    \"teamName\": \"test-team working\",\r\n    \"projectId\": 1\r\n}",
-=======
 							"raw": "{\r\n    \"teamName\": \"test-team working\",\r\n    \"status\": true,\r\n    \"projectId\": 1\r\n}",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1559,12 +1411,7 @@
 							}
 						},
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/team/3",
-							"raw": "http://localhost:8094/api/team/12",
-=======
 							"raw": "http://localhost:8094/api/team/18",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"protocol": "http",
 							"host": [
 								"localhost"
@@ -1573,12 +1420,7 @@
 							"path": [
 								"api",
 								"team",
-<<<<<<< HEAD
-								"3"
-								"12"
-=======
 								"18"
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							]
 						}
 					},
@@ -1600,11 +1442,7 @@
 						"method": "DELETE",
 						"header": [],
 						"url": {
-<<<<<<< HEAD
-							"raw": "http://localhost:8094/api/team/12",
-=======
 							"raw": "http://localhost:8094/api/team/15",
->>>>>>> 9541fdf684d8a289bc6a89c6ff4f3bafbe80da90
 							"protocol": "http",
 							"host": [
 								"localhost"
