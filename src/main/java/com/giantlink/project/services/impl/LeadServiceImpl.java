@@ -29,7 +29,6 @@ import com.giantlink.project.repositories.LeadRepository;
 import com.giantlink.project.repositories.ProductRepository;
 import com.giantlink.project.repositories.ServiceRepository;
 import com.giantlink.project.repositories.UserRepository;
-import com.giantlink.project.services.ClientService;
 import com.giantlink.project.services.LeadService;
 
 @org.springframework.stereotype.Service
@@ -83,8 +82,6 @@ public class LeadServiceImpl implements LeadService {
 		if (!findProduct.isPresent()) {
 			throw new GlNotFoundException(leadRequest.getProductId().toString(), Product.class.getSimpleName());
 		}
-
-		
 
 		Lead lead = LeadMapper.INSTANCE.requestToEntity(leadRequest);
 		lead.setCommercial(findCommercial.get());

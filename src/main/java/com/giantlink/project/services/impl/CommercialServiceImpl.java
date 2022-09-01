@@ -84,8 +84,7 @@ public class CommercialServiceImpl implements CommercialService{
 
 		commercial.setCommercialName(commercialRequest.getCommercialName());
 		commercial.setStatut(commercialRequest.getStatut());
-		//commercial.setIdCalendar(commercialRequest.getIdCalendar());
-	
+		
 
 		commercialRepository.save(commercial);
 
@@ -101,7 +100,6 @@ public class CommercialServiceImpl implements CommercialService{
 		commercials.getContent().forEach(commercial -> {
 			CommercialResponse response = CommercialResponse.builder().id(commercial.getId())
 					.commercialName(commercial.getCommercialName())
-					//.idCalendar(commercial.getIdCalendar())
 					.statut(commercial.getStatut())
 					.build();
 			
