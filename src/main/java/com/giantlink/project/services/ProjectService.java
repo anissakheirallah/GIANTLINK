@@ -17,6 +17,8 @@ public interface ProjectService {
 
 	void deleteProject(Long id) throws GlNotFoundException;
 
+	void changeStatus(Long id,Boolean status) throws GlNotFoundException;
+	
 	ProjectResponse updateProject(Long id, ProjectRequest projectRequest) throws GlNotFoundException;
 
 	ProjectResponse getProject(Long id) throws GlNotFoundException;
@@ -25,5 +27,5 @@ public interface ProjectService {
 	
 	List<ProjectResponse> getProjectsResponses();
 
-	Map<String, Object> getAllPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(String name,Pageable pageable);
 }

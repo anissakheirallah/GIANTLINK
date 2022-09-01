@@ -15,6 +15,8 @@ public interface TeamService {
 	TeamResponse addTeam(TeamRequest teamRequest) throws GlAlreadyExistException, GlNotFoundException;
 
 	void deleteTeam(Long id) throws GlNotFoundException;
+	
+	void changeStatus(Long id,Boolean status) throws GlNotFoundException;
 
 	TeamResponse updateTeam(Long id, TeamRequest teamRequest) throws GlNotFoundException;
 
@@ -22,5 +24,5 @@ public interface TeamService {
 
 	List<TeamResponse> getTeams();
 
-	Map<String, Object> getAllPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(String name,Pageable pageable);
 }

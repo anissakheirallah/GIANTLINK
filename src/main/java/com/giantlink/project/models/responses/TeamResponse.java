@@ -17,6 +17,7 @@ public class TeamResponse {
 
 	private Long id;
 	private String teamName;
+	private Boolean status;
 	private Set<UserResponse> team_users;
 	private ProjectResponse project;
 }

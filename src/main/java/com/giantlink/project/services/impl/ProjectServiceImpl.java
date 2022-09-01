@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Project;
@@ -26,7 +25,6 @@ import com.giantlink.project.repositories.TeamRepository;
 import com.giantlink.project.services.ProjectService;
 
 @Service
-@Async
 public class ProjectServiceImpl implements ProjectService {
 
 	@Autowired
@@ -42,17 +40,8 @@ public class ProjectServiceImpl implements ProjectService {
 		if (projectSearch.isPresent()) {
 			throw new GlAlreadyExistException(projectRequest.getProjectName(), Project.class.getSimpleName());
 		} else {
-
-			/*
-			 * Project project =
-			 * Project.builder().projectName(projectRequest.getProjectName())
-			 * .projectType(projectRequest.getProjectType()).team(team.get())
-			 * .startDate(projectRequest.getStartDate()).finishDate(projectRequest.
-			 * getFinishDate()).build();
-			 */
-
 			Project project = ProjectMapper.INSTANCE.mapRequest(projectRequest);
-			// project.setTeam(team.get());
+			project.setStatus(true);
 			return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(project));
 		}
 	}
@@ -84,7 +73,6 @@ public class ProjectServiceImpl implements ProjectService {
 		}
 		projectSearch.get().setProjectName(projectRequest.getProjectName());
 		projectSearch.get().setProjectType(projectRequest.getProjectType());
-		// projectSearch.get().setTeam(teamSearch.get());
 		projectSearch.get().setStartDate(projectRequest.getStartDate());
 		projectSearch.get().setFinishDate(projectRequest.getFinishDate());
 		return ProjectMapper.INSTANCE.mapEntity(projectRepository.save(projectSearch.get()));
@@ -106,9 +94,10 @@ public class ProjectServiceImpl implements ProjectService {
 	}
 
 	@Override
-	public Map<String, Object> getAllPaginations(Pageable pageable) {
+	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
 		List<ProjectResponse> projectResponses = new ArrayList<>();
-		Page<Project> projects = projectRepository.findAll(pageable);
+		Page<Project> projects = (name.isBlank()) ? projectRepository.findAll(pageable)
+				: projectRepository.findByProjectNameContainingIgnoreCase(name, pageable);
 
 		projects.getContent().forEach(project -> {
 			projectResponses.add(ProjectMapper.INSTANCE.mapEntity(project));
@@ -126,6 +115,16 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public List<ProjectResponse> getProjectsResponses() {
 		return ProjectMapper.INSTANCE.mapResponses(projectRepository.findAll());
+	}
+
+	@Override
+	public void changeStatus(Long id, Boolean status) throws GlNotFoundException {
+		Optional<Project> project = projectRepository.findById(id);
+		if (project.isEmpty()) {
+			throw new GlNotFoundException("project", Project.class.getSimpleName());
+		}
+		project.get().setStatus(status);
+		projectRepository.save(project.get());
 	}
 
 }

@@ -29,9 +29,10 @@ public interface UserService {
 
 	List<UserResponse> getUsers();
 
-	Map<String, Object> getAllPaginations(Pageable pageable);
+	Map<String, Object> getAllPaginations(String name, Pageable pageable);
 
 	void changeRole(Long userId, Long roleId) throws GlNotFoundException;
-	
-	void refreshToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException;
+
+	void refreshToken(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
+			throws IOException;
 }

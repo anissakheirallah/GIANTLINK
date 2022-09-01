@@ -43,8 +43,6 @@ public class UserController {
 		return new ResponseEntity<List<UserResponse>>(userService.getUsers(), HttpStatus.OK);
 	}
 
-	// @RequestMapping(value = "/", method = RequestMethod .POST)
-	// @PostMapping(value = "/", consumes = MediaType.APPLICATION_JSON_VALUE)
 	@PostMapping
 	public ResponseEntity<UserResponse> add(@RequestBody UserRequest userRequest)
 			throws GlAlreadyExistException, GlNotFoundException {
@@ -81,11 +79,11 @@ public class UserController {
 	}
 
 	@GetMapping
-	//@PreAuthorize("hasRole('ROLE_ADMIN')")
+	// @PreAuthorize("hasRole('ROLE_ADMIN')")
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(userService.getAllPaginations(pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(userService.getAllPaginations(name, pageable), HttpStatus.OK);
 	}
 
 	@GetMapping("/refreshtoken")

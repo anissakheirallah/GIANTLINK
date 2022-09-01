@@ -65,7 +65,7 @@ public class TeamController {
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(teamService.getAllPaginations(pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(teamService.getAllPaginations(name, pageable), HttpStatus.OK);
 	}
 
 }

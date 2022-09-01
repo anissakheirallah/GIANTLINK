@@ -5,6 +5,7 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -35,6 +36,10 @@ public class Project {
 	private String projectType;
 	private Date startDate;
 	private Date finishDate;
+	private Boolean status;
+	
+	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+	private Set<Pack> packs;
 
 	@OneToMany(orphanRemoval = false, mappedBy = "project")
 	@JsonManagedReference

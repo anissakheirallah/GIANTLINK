@@ -73,8 +73,6 @@ public class Lead {
 	@Column(nullable = false)
 	private Date timestamp;
 
-	@OneToOne(cascade = CascadeType.ALL)
-	private Appointment appointment;
 
 	@PrePersist
 	private void onCreate() {

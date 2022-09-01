@@ -63,8 +63,8 @@ public class ProjectController {
 
 	@GetMapping
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
-			@RequestParam(defaultValue = "2") int size, @RequestParam(defaultValue = "", name = "name") String name) {
+			@RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(projectService.getAllPaginations(pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(projectService.getAllPaginations(name,pageable), HttpStatus.OK);
 	}
 }

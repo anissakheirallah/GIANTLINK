@@ -17,5 +17,6 @@ public class ProjectRequest {
 	private String projectType;
 	private Date startDate;
 	private Date finishDate;
+	private Boolean status;
 
 }
