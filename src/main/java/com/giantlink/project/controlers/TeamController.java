@@ -49,6 +49,13 @@ public class TeamController {
 		return new ResponseEntity<TeamResponse>(teamService.getTeam(id), HttpStatus.OK);
 	}
 
+	@PutMapping("/status/{id}")
+	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestParam Boolean status)
+			throws GlNotFoundException {
+		teamService.changeStatus(id, status);
+		return new ResponseEntity<String>("status changed!", HttpStatus.OK);
+	}
+
 	@DeleteMapping("/{id}")
 	public ResponseEntity<String> delete(@PathVariable("id") Long id) throws GlNotFoundException {
 		teamService.deleteTeam(id);

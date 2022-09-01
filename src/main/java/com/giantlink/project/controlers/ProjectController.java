@@ -55,6 +55,13 @@ public class ProjectController {
 		return new ResponseEntity<String>("deleted !", HttpStatus.OK);
 	}
 
+	@PutMapping("/status/{id}")
+	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestParam Boolean status)
+			throws GlNotFoundException {
+		projectService.changeStatus(id, status);
+		return new ResponseEntity<String>("status changed!", HttpStatus.OK);
+	}
+
 	@PutMapping("/{id}")
 	public ResponseEntity<ProjectResponse> update(@PathVariable("id") Long id,
 			@RequestBody ProjectRequest projectRequest) throws GlNotFoundException {
@@ -65,6 +72,6 @@ public class ProjectController {
 	public ResponseEntity<Map<String, Object>> getAll(@RequestParam(defaultValue = "0") int page,
 			@RequestParam(defaultValue = "3") int size, @RequestParam(defaultValue = "", name = "name") String name) {
 		Pageable pageable = PageRequest.of(page, size);
-		return new ResponseEntity<Map<String, Object>>(projectService.getAllPaginations(name,pageable), HttpStatus.OK);
+		return new ResponseEntity<Map<String, Object>>(projectService.getAllPaginations(name, pageable), HttpStatus.OK);
 	}
 }
