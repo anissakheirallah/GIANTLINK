@@ -1,9 +1,5 @@
 package com.giantlink.project.models.responses;
 
-import java.util.Set;
-
-import com.giantlink.project.entities.Lead;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +15,6 @@ public class ProductResponse {
 
 	private Long id;
 	private String productName;
-	
 
-	//private Set<LeadResponse> leads;
+	// private Set<LeadResponse> leads;
 }
