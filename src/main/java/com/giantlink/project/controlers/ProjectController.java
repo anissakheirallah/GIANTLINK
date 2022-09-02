@@ -56,7 +56,7 @@ public class ProjectController {
 	}
 
 	@PutMapping("/status/{id}")
-	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestParam Boolean status)
+	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestBody Boolean status)
 			throws GlNotFoundException {
 		projectService.changeStatus(id, status);
 		return new ResponseEntity<String>("status changed!", HttpStatus.OK);
