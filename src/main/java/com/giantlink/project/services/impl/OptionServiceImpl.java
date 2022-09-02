@@ -36,7 +36,7 @@ public class OptionServiceImpl implements OptionService {
 
 		Optional<Option> findOption = optionRepository.findByOptionName(optionRequest.getOptionName());
 		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
-		if (!findOption.isPresent()) {
+		if (!findProject.isPresent()) {
 			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
 		}
 		if (findOption.isPresent()) {
@@ -75,7 +75,7 @@ public class OptionServiceImpl implements OptionService {
 	public OptionResponse update(Long id, OptionRequest optionRequest) throws GlNotFoundException {
 		Optional<Option> findOption = optionRepository.findById(id);
 		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
-		if (!findOption.isPresent()) {
+		if (!findProject.isPresent()) {
 			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
 		}
 		if (!findOption.isPresent()) {
