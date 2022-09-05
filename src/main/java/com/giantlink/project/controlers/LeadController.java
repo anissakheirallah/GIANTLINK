@@ -47,7 +47,7 @@ public class LeadController {
 
 	@PostMapping
 	public ResponseEntity<LeadResponse> add(@RequestBody LeadRequest leadRequest)
-			throws GlNotFoundException,GlAlreadyExistException {
+			throws GlNotFoundException,GlAlreadyExistException, Exception {
 		return new ResponseEntity<LeadResponse>(leadService.add(leadRequest), HttpStatus.CREATED);
 	}
 	

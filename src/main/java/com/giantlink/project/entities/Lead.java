@@ -40,6 +40,10 @@ public class Lead {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long id;
 	
+	private float totalPoint;
+	private String voice;
+	private String callType;
+	
 
 	@Temporal(TemporalType.DATE)
 	private Date appointmentDate;
