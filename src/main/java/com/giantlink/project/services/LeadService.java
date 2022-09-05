@@ -12,7 +12,7 @@ import com.giantlink.project.models.responses.LeadResponse;
 
 public interface LeadService {
 	
-	LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException;
+	LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException, Exception;
 
 	List<LeadResponse> getAll();
 

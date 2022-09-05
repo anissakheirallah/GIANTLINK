@@ -57,9 +57,7 @@ public class LeadServiceImpl implements LeadService {
 
 	@Transactional
 	@Override
-	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException {
-
-		// can the client have the same lead twice ??
+	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException, Exception {
 
 		// check user
 		Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
@@ -94,6 +92,7 @@ public class LeadServiceImpl implements LeadService {
 		lead.setUser(findUser.get());
 
 		// check service
+		float totalPoint = leadRequest.getTotalPoint();
 		Set<Service> services = new HashSet<>();
 		Set<ServiceRequest> serviceRequests = leadRequest.getServices();
 		if (serviceRequests == null || serviceRequests.isEmpty()) {
@@ -103,11 +102,14 @@ public class LeadServiceImpl implements LeadService {
 			Optional<Service> findService = serviceRepository.findByServiceName(service.getServiceName());
 			if (findService.isPresent()) {
 				services.add(findService.get());
+				totalPoint += service.getPoint();
 			}
 		}
 
 		lead.setServices(services);
-
+		if(totalPoint == 0) throw new Exception("the Total Point must be superior  than ZERO");
+		lead.setTotalPoint(totalPoint);
+		
 		return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
 
 	}
@@ -178,6 +180,7 @@ public class LeadServiceImpl implements LeadService {
 				lead.setUser(findUser.get());
 
 				// check service
+				float totalPoint = leadRequest.getTotalPoint();
 				Set<Service> services = new HashSet<>();
 				Set<ServiceRequest> serviceRequests = leadRequest.getServices();
 				if (serviceRequests == null || serviceRequests.isEmpty()) {
@@ -187,13 +190,19 @@ public class LeadServiceImpl implements LeadService {
 					Optional<Service> findService = serviceRepository.findByServiceName(service.getServiceName());
 					if (findService.isPresent()) {
 						services.add(findService.get());
+						totalPoint += service.getPoint();
 					}
 				}
 
 				lead.setServices(services);
+				lead.setTotalPoint(totalPoint);
 				
 				lead.setAppointmentDate(leadRequest.getAppointmentDate());
 				lead.setAppointmentTime(leadRequest.getAppointmentTime());
+				
+				lead.setCallType(leadRequest.getCallType());
+				lead.setVoice(leadRequest.getVoice());
+				
 
 				return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
 	}

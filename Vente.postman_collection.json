@@ -520,7 +520,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 8,\r\n    \"userId\": 15,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service two\",\r\n            \"point\": 0.25,\r\n            \"statut\": true\r\n        },\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.35,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\",\r\n    \"totalPoint\": 0\r\n}",
+							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 10,\r\n    \"userId\": 8,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service one\",\r\n            \"point\": 0.35,\r\n            \"statut\": true\r\n        },\r\n        {\r\n            \"serviceName\": \"service two\",\r\n            \"point\": 0.20,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\",\r\n\t\"voice\":\"manual\" ,\r\n\t\"callType\":\"ACQ\" ,\r\n    \"totalPoint\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -590,7 +590,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 8,\r\n    \"userId\": 7,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.25,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\"\r\n}",
+							"raw": "{\r\n    \"client\": {\r\n        \"firstName\": \"test\",\r\n        \"lastName\": \"teeest\",\r\n        \"adress\": \"adress 10 narjiss\",\r\n        \"tele\": \"0611223344\",\r\n        \"email\": \"ghiz@gmail.com\",\r\n        \"gsm\": \"321456\",\r\n        \"cp\": \"cp 3000\",\r\n        \"city\": \"fes\"\r\n    },\r\n    \"commercialId\": 8,\r\n    \"userId\": 15,\r\n    \"productId\": 9,\r\n    \"services\": [\r\n        {\r\n            \"serviceName\": \"service two\",\r\n            \"point\": 0.25,\r\n            \"statut\": true\r\n        },\r\n        {\r\n            \"serviceName\": \"service three\",\r\n            \"point\": 0.35,\r\n            \"statut\": true\r\n        }\r\n    ],\r\n    \"appointmentDate\": \"2020-05-16\",\r\n    \"appointmentTime\": \"2020-05-16T08:24:00.000\",\r\n\t\"voice\":\"manual\" ,\r\n\t\"callType\":\"ACQ\" ,\r\n    \"totalPoint\": 0\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -646,7 +646,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"serviceName\": \"service four\",\r\n\t\"point\": 0,\r\n\t\"statut\": true,\r\n\t\"serviceTypeId\": 10\r\n}",
+							"raw": "{\r\n    \"serviceName\": \"service four\",\r\n\t\"point\": 0,\r\n\t\"statut\": true,\r\n\t\"serviceTypeId\": 11\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
