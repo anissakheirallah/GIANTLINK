@@ -71,7 +71,7 @@ public class LeadServiceImpl implements LeadService {
 			throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
 		}*/
 		
-		EmployeeResponse findUser = restTemplate.getForObject("http://localhost:8091/api/employee/"+ leadRequest.getEmployeeId(), EmployeeResponse.class);
+		EmployeeResponse employee = restTemplate.getForObject("http://localhost:8091/api/employee/"+ leadRequest.getEmployeeId(), EmployeeResponse.class);
 		
 
 		// check commercial
@@ -91,7 +91,8 @@ public class LeadServiceImpl implements LeadService {
 		
 		lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
 		//lead.setUser(findUser.get());
-		lead.setEmployeeId(findUser.getId());
+		
+		
 		// check service
 		float totalPoint = leadRequest.getTotalPoint();
 		Set<Service> services = new HashSet<>();
@@ -111,11 +112,14 @@ public class LeadServiceImpl implements LeadService {
 		if(totalPoint == 0) throw new Exception("the Total Point must be superior  than ZERO");
 		lead.setTotalPoint(totalPoint);
 		
-		//LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
-		//leadResponse.setEmployee(findUser);
-		//BeanUtils.copyProperties(leadResponse, lead);
+		//LeadResponse leadResponse = new LeadResponse();
+
+		leadRepository.save(lead);
+		//BeanUtils.copyProperties(lead , leadResponse);
+		LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
+		leadResponse.setEmployee(employee);		
 		
-		return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
+		return leadResponse;
 
 	}
 
