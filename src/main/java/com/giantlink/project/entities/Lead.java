@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
@@ -28,7 +29,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "leads")
+//@Table(name = "leads")
+@Table(indexes = @Index(columnList = "employeeId"), name="leads")
 @Setter
 @Getter
 @NoArgsConstructor
@@ -52,10 +54,12 @@ public class Lead {
 	@Temporal(TemporalType.TIME)
 	private Date appointmentTime;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "user_id", nullable = false)
-	@JsonBackReference
-	private User user;
+	//@ManyToOne(cascade = CascadeType.PERSIST)
+	//@JoinColumn(name = "user_id", nullable = false)
+	//@JsonBackReference
+	//private User user;
+	
+	private Long employeeId;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "commercial_id", nullable = false)

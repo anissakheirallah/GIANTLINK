@@ -14,10 +14,10 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class LeadRequest {
 
-	private Long userId;
+	//private Long userId;
+	private Long employeeId;
 	private Long commercialId;
 	private ClientRequest client;
-	// private Long clientId;
 	private Long productId;
 
 	private Set<ServiceRequest> services;

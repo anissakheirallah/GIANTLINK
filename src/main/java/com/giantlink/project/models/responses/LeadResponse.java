@@ -3,6 +3,8 @@ package com.giantlink.project.models.responses;
 import java.util.Date;
 import java.util.Set;
 
+import com.giantlink.glintranetdto.models.responses.EmployeeResponse;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +20,8 @@ public class LeadResponse {
 
 	private Long id;
 
-	private UserResponse user;
+	//private UserResponse user;
+	private EmployeeResponse employee;
 	private ClientResponse client;
 	private CommercialResponse commercial;
 	private ProductResponse product;
