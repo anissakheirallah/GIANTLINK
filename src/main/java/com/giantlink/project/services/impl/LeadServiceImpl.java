@@ -10,10 +10,13 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.client.RestTemplate;
 
+import com.giantlink.glintranetdto.models.responses.EmployeeResponse;
 import com.giantlink.project.entities.Commercial;
 import com.giantlink.project.entities.Lead;
 import com.giantlink.project.entities.Product;
@@ -54,24 +57,22 @@ public class LeadServiceImpl implements LeadService {
 
 	@Autowired
 	private CommercialRepository commercialRepository;
+	
+	@Autowired
+	RestTemplate restTemplate;
 
 	@Transactional
 	@Override
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException, Exception {
 
 		// check user
-		Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
+		/*Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
 		if (!findUser.isPresent()) {
 			throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
-		}
-
-		// check client
-		// Optional<Client> findClient =
-		// clientRepository.findById(leadRequest.getClientId());
-		// if (!findClient.isPresent()) {
-		// throw new
-		// GlNotFoundException(leadRequest.getClientId().toString(),Client.class.getSimpleName());
-		// }
+		}*/
+		
+		EmployeeResponse employee = restTemplate.getForObject("http://localhost:8091/api/employee/"+ leadRequest.getEmployeeId(), EmployeeResponse.class);
+		
 
 		// check commercial
 		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
@@ -87,10 +88,11 @@ public class LeadServiceImpl implements LeadService {
 		Lead lead = LeadMapper.INSTANCE.requestToEntity(leadRequest);
 		lead.setCommercial(findCommercial.get());
 		lead.setProduct(findProduct.get());
-		// lead.setClient(findClient.get());
+		
 		lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
-		lead.setUser(findUser.get());
-
+		//lead.setUser(findUser.get());
+		
+		
 		// check service
 		float totalPoint = leadRequest.getTotalPoint();
 		Set<Service> services = new HashSet<>();
@@ -110,7 +112,14 @@ public class LeadServiceImpl implements LeadService {
 		if(totalPoint == 0) throw new Exception("the Total Point must be superior  than ZERO");
 		lead.setTotalPoint(totalPoint);
 		
-		return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
+		//LeadResponse leadResponse = new LeadResponse();
+
+		leadRepository.save(lead);
+		//BeanUtils.copyProperties(lead , leadResponse);
+		LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
+		leadResponse.setEmployee(employee);		
+		
+		return leadResponse;
 
 	}
 
@@ -155,9 +164,9 @@ public class LeadServiceImpl implements LeadService {
 		}
 
 		// check user
-				Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
+				Optional<User> findUser = userRepository.findById(leadRequest.getEmployeeId());
 				if (!findUser.isPresent()) {
-					throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
+					throw new GlNotFoundException(leadRequest.getEmployeeId().toString(), User.class.getSimpleName());
 				}
 
 				// check commercial
@@ -175,9 +184,8 @@ public class LeadServiceImpl implements LeadService {
 				Lead lead = findLead.get();
 				lead.setCommercial(findCommercial.get());
 				lead.setProduct(findProduct.get());
-				// lead.setClient(findClient.get());
 				lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
-				lead.setUser(findUser.get());
+				//lead.setUser(findUser.get());
 
 				// check service
 				float totalPoint = leadRequest.getTotalPoint();

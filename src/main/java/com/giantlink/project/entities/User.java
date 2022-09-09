@@ -55,9 +55,9 @@ public class User {
 	@JoinTable(name = "team_users", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "team_id"))
 	private Set<Team> teams;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
-	@JsonManagedReference
-	private Set<Lead> leads;
+	//@OneToMany(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
+	//@JsonManagedReference
+	//private Set<Lead> leads;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(nullable = false)
