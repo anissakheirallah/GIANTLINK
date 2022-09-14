@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,7 +45,8 @@ public class Commercial {
 	@Column(nullable = false)
 	private Date timestamp;
 
-	@OneToMany(mappedBy = "commercial", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "commercial", fetch = FetchType.EAGER)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Set<Lead> leads;
 
 	@PrePersist

@@ -26,7 +26,7 @@ public class LeadRequest {
 
 	private Date appointmentTime;
 	
-	private float totalPoint;
+	//private float totalPoint;
 	private String voice;
 	private String callType;
 

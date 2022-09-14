@@ -22,6 +22,8 @@ public interface CommercialService {
 
 	CommercialResponse update(Long id, CommercialRequest commercialRequest) throws GlNotFoundException ;
 	
+	void changeStatus(Long id,Boolean status) throws GlNotFoundException;
+	
 	Map<String, Object> getAllPaginations(String name, Pageable pageable);
 
 }

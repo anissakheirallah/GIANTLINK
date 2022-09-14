@@ -16,6 +16,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -44,7 +47,8 @@ public class Client {
 	private String city;
 	
 	
-	@OneToMany(mappedBy = "client",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "client",fetch=FetchType.EAGER)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Set<Lead> leads;
 	
 	

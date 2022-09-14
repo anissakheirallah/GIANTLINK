@@ -10,7 +10,6 @@ import java.util.Set;
 
 import javax.transaction.Transactional;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -57,7 +56,7 @@ public class LeadServiceImpl implements LeadService {
 
 	@Autowired
 	private CommercialRepository commercialRepository;
-	
+
 	@Autowired
 	RestTemplate restTemplate;
 
@@ -66,13 +65,15 @@ public class LeadServiceImpl implements LeadService {
 	public LeadResponse add(LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException, Exception {
 
 		// check user
-		/*Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
-		if (!findUser.isPresent()) {
-			throw new GlNotFoundException(leadRequest.getUserId().toString(), User.class.getSimpleName());
-		}*/
-		
-		EmployeeResponse employee = restTemplate.getForObject("http://localhost:8091/api/employee/"+ leadRequest.getEmployeeId(), EmployeeResponse.class);
-		
+		/*
+		 * Optional<User> findUser = userRepository.findById(leadRequest.getUserId());
+		 * if (!findUser.isPresent()) { throw new
+		 * GlNotFoundException(leadRequest.getUserId().toString(),
+		 * User.class.getSimpleName()); }
+		 */
+
+		EmployeeResponse employee = restTemplate.getForObject(
+				"http://localhost:8091/api/employee/" + leadRequest.getEmployeeId(), EmployeeResponse.class);
 
 		// check commercial
 		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
@@ -88,18 +89,18 @@ public class LeadServiceImpl implements LeadService {
 		Lead lead = LeadMapper.INSTANCE.requestToEntity(leadRequest);
 		lead.setCommercial(findCommercial.get());
 		lead.setProduct(findProduct.get());
-		
+
 		lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
-		//lead.setUser(findUser.get());
-		
-		
+		// lead.setUser(findUser.get());
+
 		// check service
-		float totalPoint = leadRequest.getTotalPoint();
+		float totalPoint = 0;
 		Set<Service> services = new HashSet<>();
 		Set<ServiceRequest> serviceRequests = leadRequest.getServices();
 		if (serviceRequests == null || serviceRequests.isEmpty()) {
 			throw new GlNotFoundException("list is empty", Service.class.getSimpleName());
 		}
+		
 		for (ServiceRequest service : serviceRequests) {
 			Optional<Service> findService = serviceRepository.findByServiceName(service.getServiceName());
 			if (findService.isPresent()) {
@@ -109,16 +110,17 @@ public class LeadServiceImpl implements LeadService {
 		}
 
 		lead.setServices(services);
-		if(totalPoint == 0) throw new Exception("the Total Point must be superior  than ZERO");
+		if (totalPoint == 0) {
+			throw new Exception("the Total Point must be superior  than ZERO");
+		}
 		lead.setTotalPoint(totalPoint);
 		
-		//LeadResponse leadResponse = new LeadResponse();
 
 		leadRepository.save(lead);
-		//BeanUtils.copyProperties(lead , leadResponse);
+		// BeanUtils.copyProperties(lead , leadResponse);
 		LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
-		leadResponse.setEmployee(employee);		
-		
+		leadResponse.setEmployee(employee);
+
 		return leadResponse;
 
 	}
@@ -128,6 +130,7 @@ public class LeadServiceImpl implements LeadService {
 
 		return LeadMapper.INSTANCE.mapLead(leadRepository.findAll());
 	}
+	
 
 	@Override
 	public LeadResponse get(Long id) throws GlNotFoundException {
@@ -137,11 +140,19 @@ public class LeadServiceImpl implements LeadService {
 		if (!findLead.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Lead.class.getSimpleName());
 		}
-
-		return LeadMapper.INSTANCE.entityToResponse(leadRepository.findById(id).get());
+		
+		LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(findLead.get());
+		
+		EmployeeResponse employee = restTemplate.getForObject(
+				"http://localhost:8091/api/employee/" + findLead.get().getEmployeeId(), EmployeeResponse.class);
+		
+		 leadResponse.setEmployee(employee);
+		
+		 return leadResponse;
 
 	}
 
+	
 	@Override
 	public void delete(Long id) throws GlNotFoundException {
 
@@ -153,47 +164,52 @@ public class LeadServiceImpl implements LeadService {
 
 		leadRepository.deleteById(id);
 
+
 	}
 
 	@Override
-	public LeadResponse update(Long id, LeadRequest leadRequest) throws GlNotFoundException {
-		
+	public LeadResponse update(Long id, LeadRequest leadRequest) throws GlNotFoundException, Exception {
+
 		Optional<Lead> findLead = leadRepository.findById(id);
 		if (!findLead.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Lead.class.getSimpleName());
 		}
 
 		// check user
-				Optional<User> findUser = userRepository.findById(leadRequest.getEmployeeId());
-				if (!findUser.isPresent()) {
-					throw new GlNotFoundException(leadRequest.getEmployeeId().toString(), User.class.getSimpleName());
-				}
+//		Optional<User> findUser = userRepository.findById(leadRequest.getEmployeeId());
+//		if (!findUser.isPresent()) {
+//			throw new GlNotFoundException(leadRequest.getEmployeeId().toString(), User.class.getSimpleName());
+//		}
+		
+		EmployeeResponse employee = restTemplate.getForObject(
+				"http://localhost:8091/api/employee/" + leadRequest.getEmployeeId(), EmployeeResponse.class);
 
-				// check commercial
-				Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
-				if (!findCommercial.isPresent()) {
-					throw new GlNotFoundException(leadRequest.getCommercialId().toString(), Commercial.class.getSimpleName());
-				}
-				
-				// check product
-				Optional<Product> findProduct = productRepository.findById(leadRequest.getProductId());
-				if (!findProduct.isPresent()) {
-					throw new GlNotFoundException(leadRequest.getProductId().toString(), Product.class.getSimpleName());
-				}
+		// check commercial
+		Optional<Commercial> findCommercial = commercialRepository.findById(leadRequest.getCommercialId());
+		if (!findCommercial.isPresent()) {
+			throw new GlNotFoundException(leadRequest.getCommercialId().toString(), Commercial.class.getSimpleName());
+		}
 
-				Lead lead = findLead.get();
-				lead.setCommercial(findCommercial.get());
-				lead.setProduct(findProduct.get());
-				lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
-				//lead.setUser(findUser.get());
+		// check product
+		Optional<Product> findProduct = productRepository.findById(leadRequest.getProductId());
+		if (!findProduct.isPresent()) {
+			throw new GlNotFoundException(leadRequest.getProductId().toString(), Product.class.getSimpleName());
+		}
 
-				// check service
-				float totalPoint = leadRequest.getTotalPoint();
+		Lead lead = findLead.get();
+		lead.setCommercial(findCommercial.get());
+		lead.setProduct(findProduct.get());
+		lead.setClient(clientRepository.save(ClientMapper.INSTANCE.requestToEntity(leadRequest.getClient())));
+		// lead.setUser(findUser.get());
+
+		// check service
+				float totalPoint = 0;
 				Set<Service> services = new HashSet<>();
 				Set<ServiceRequest> serviceRequests = leadRequest.getServices();
 				if (serviceRequests == null || serviceRequests.isEmpty()) {
 					throw new GlNotFoundException("list is empty", Service.class.getSimpleName());
 				}
+				
 				for (ServiceRequest service : serviceRequests) {
 					Optional<Service> findService = serviceRepository.findByServiceName(service.getServiceName());
 					if (findService.isPresent()) {
@@ -203,16 +219,25 @@ public class LeadServiceImpl implements LeadService {
 				}
 
 				lead.setServices(services);
+				if (totalPoint == 0) {
+					throw new Exception("the Total Point must be superior  than ZERO");
+				}
 				lead.setTotalPoint(totalPoint);
 				
-				lead.setAppointmentDate(leadRequest.getAppointmentDate());
-				lead.setAppointmentTime(leadRequest.getAppointmentTime());
-				
-				lead.setCallType(leadRequest.getCallType());
-				lead.setVoice(leadRequest.getVoice());
-				
 
-				return LeadMapper.INSTANCE.entityToResponse(leadRepository.save(lead));
+	
+		lead.setAppointmentDate(leadRequest.getAppointmentDate());
+		lead.setAppointmentTime(leadRequest.getAppointmentTime());
+
+		lead.setCallType(leadRequest.getCallType());
+		lead.setVoice(leadRequest.getVoice());
+
+		leadRepository.save(lead);
+		// BeanUtils.copyProperties(lead , leadResponse);
+		LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
+		leadResponse.setEmployee(employee);
+
+		return leadResponse;
 	}
 
 	@Override
@@ -221,7 +246,15 @@ public class LeadServiceImpl implements LeadService {
 		Page<Lead> leads = leadRepository.findAll(pageable);
 
 		leads.getContent().forEach(lead -> {
-			leadResponses.add(LeadMapper.INSTANCE.entityToResponse(lead));
+			
+			LeadResponse leadResponse = LeadMapper.INSTANCE.entityToResponse(lead);
+			
+			EmployeeResponse employee = restTemplate.getForObject(
+					"http://localhost:8091/api/employee/" + lead.getEmployeeId(), EmployeeResponse.class);
+			
+			 leadResponse.setEmployee(employee);
+			leadResponses.add(leadResponse);
+			
 		});
 
 		Map<String, Object> requestResponse = new HashMap<>();

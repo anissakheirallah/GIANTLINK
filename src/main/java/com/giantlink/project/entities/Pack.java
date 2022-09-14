@@ -9,6 +9,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
@@ -32,9 +35,10 @@ public class Pack {
 	
 	private String packName;
 	
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne()
 	@JoinColumn(name = "project_id", nullable = false)
 	@JsonBackReference
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Project project;
 	
 }
