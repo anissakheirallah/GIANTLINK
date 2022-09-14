@@ -20,7 +20,7 @@ public interface LeadService {
 
 	void delete(Long id) throws GlNotFoundException;
 
-	LeadResponse update(Long id, LeadRequest leadRequest) throws GlNotFoundException ;
+	LeadResponse update(Long id, LeadRequest leadRequest) throws GlNotFoundException, Exception ;
 	
 	Map<String, Object> getAllPaginations(String name, Pageable pageable);
 

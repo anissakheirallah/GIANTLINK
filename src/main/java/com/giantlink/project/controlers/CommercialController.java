@@ -64,6 +64,13 @@ public class CommercialController {
 	public ResponseEntity<CommercialResponse> edit(@PathVariable("id") Long id, @RequestBody CommercialRequest commercialRequest) throws GlAlreadyExistException, GlNotFoundException  {
 		return new ResponseEntity<CommercialResponse>(commercialService.update(id, commercialRequest), HttpStatus.OK);
 	}
+	
+	@PutMapping("/status/{id}")
+	public ResponseEntity<String> changeStatus(@PathVariable("id") Long id, @RequestBody Boolean status)
+			throws GlNotFoundException {
+		commercialService.changeStatus(id, status);
+		return new ResponseEntity<String>("status changed!", HttpStatus.OK);
+	}
 
 
 }

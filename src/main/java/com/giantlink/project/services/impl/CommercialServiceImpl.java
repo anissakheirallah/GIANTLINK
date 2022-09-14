@@ -114,4 +114,15 @@ public class CommercialServiceImpl implements CommercialService{
 		return commercialMap;
 	}
 
+	@Override
+	public void changeStatus(Long id, Boolean status) throws GlNotFoundException {
+		Optional<Commercial> commercial = commercialRepository.findById(id);
+		if (!commercial.isPresent()) {
+			throw new GlNotFoundException(id.toString(), Commercial.class.getSimpleName());
+		}
+		commercial.get().setStatut(status);
+		commercialRepository.save(commercial.get());
+		
+	}
+
 }

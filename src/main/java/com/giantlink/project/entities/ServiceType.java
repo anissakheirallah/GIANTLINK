@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,7 +34,8 @@ public class ServiceType {
 	private Long id;
 	private String label;
 	
-	@OneToMany(mappedBy = "serviceType",fetch=FetchType.EAGER,cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "serviceType",fetch=FetchType.EAGER,orphanRemoval = true)
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Set<Service> services;
 	
 

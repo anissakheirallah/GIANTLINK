@@ -13,12 +13,16 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -72,6 +76,12 @@ public class Lead {
 	private Product product;
 
 	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(
+			name = "Leads_Services",
+			joinColumns = @JoinColumn(name = "lead_id"),
+			inverseJoinColumns = @JoinColumn(name = "service_id")
+			)
+	@OnDelete(action = OnDeleteAction.CASCADE)
 	private Set<Service> services;
 
 	@ManyToOne(cascade = CascadeType.PERSIST)

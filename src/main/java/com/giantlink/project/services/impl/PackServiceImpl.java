@@ -1,18 +1,15 @@
 package com.giantlink.project.services.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
+import com.giantlink.glintranetdto.models.responses.ProjectResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Pack;
-import com.giantlink.project.entities.Project;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
 import com.giantlink.project.exceptions.GlNotFoundException;
 import com.giantlink.project.mappers.PackMapper;
@@ -21,6 +18,7 @@ import com.giantlink.project.models.responses.PackResponse;
 import com.giantlink.project.repositories.PackRepository;
 import com.giantlink.project.repositories.ProjectRepository;
 import com.giantlink.project.services.PackService;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class PackServiceImpl implements PackService {
@@ -31,20 +29,21 @@ public class PackServiceImpl implements PackService {
 	@Autowired
 	ProjectRepository projectRepository;
 
+	@Autowired
+	RestTemplate restTemplate;
+
 	@Override
 	public PackResponse add(PackRequest packRequest) throws GlAlreadyExistException, GlNotFoundException {
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + packRequest.getProjectId(), ProjectResponse.class);
 		Optional<Pack> findPack = packRepository.findByPackName(packRequest.getPackName());
 		if (findPack.isPresent()) {
 			throw new GlAlreadyExistException("pack", Pack.class.getSimpleName());
 		}
-		Optional<Project> findProject = projectRepository.findById(packRequest.getProject_id());
-		if (findProject.isEmpty()) {
-			throw new GlNotFoundException("project", Project.class.getSimpleName());
-		}
 		Pack pack = PackMapper.INSTANCE.requestToEntity(packRequest);
-		pack.setProject(findProject.get());
-
-		return PackMapper.INSTANCE.entityToResponse(packRepository.save(pack));
+		packRepository.save(pack);
+		PackResponse packResponse = PackMapper.INSTANCE.entityToResponse(pack);
+		packResponse.setProject(projectResponse);
+		return packResponse;
 	}
 
 	@Override
@@ -58,7 +57,10 @@ public class PackServiceImpl implements PackService {
 		if (findPack.isEmpty()) {
 			throw new GlNotFoundException("pack", Pack.class.getSimpleName());
 		}
-		return PackMapper.INSTANCE.entityToResponse(findPack.get());
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + findPack.get().getProjectId(), ProjectResponse.class);
+		PackResponse response = PackMapper.INSTANCE.entityToResponse(findPack.get());
+		response.setProject(projectResponse);
+		return response;
 	}
 
 	@Override
@@ -72,32 +74,43 @@ public class PackServiceImpl implements PackService {
 
 	@Override
 	public PackResponse update(Long id, PackRequest packRequest) throws GlNotFoundException {
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + packRequest.getProjectId(), ProjectResponse.class);
 		Optional<Pack> findPack = packRepository.findById(id);
 		if (findPack.isEmpty()) {
 			throw new GlNotFoundException("pack", Pack.class.getSimpleName());
 		}
-		Optional<Project> findProject = projectRepository.findById(packRequest.getProject_id());
-		if (findProject.isEmpty()) {
-			throw new GlNotFoundException("project", Project.class.getSimpleName());
-		}
-		findPack.get().setPackName(packRequest.getPackName());
-		findPack.get().setProject(findProject.get());
-
-		return PackMapper.INSTANCE.entityToResponse(packRepository.save(findPack.get()));
+		Pack pack = PackMapper.INSTANCE.requestToEntity(packRequest);
+		pack.setId(id);
+		packRepository.save(pack);
+		PackResponse packResponse = PackMapper.INSTANCE.entityToResponse(pack);
+		packResponse.setProject(projectResponse);
+		return packResponse;
 	}
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
-		List<PackResponse> packResponses = new ArrayList<>();
+		List<PackResponse> packResponseList = new ArrayList<>();
+		ResponseEntity<ProjectResponse[]> result = restTemplate.getForEntity("http://localhost:8091/api/project",ProjectResponse[].class);
+		List<ProjectResponse> projects = List.of(result.getBody());
+		if(name.isBlank()){
+			for (Pack pack : packRepository.findAll(pageable).getContent()) {
+				PackResponse packResponse = PackMapper.INSTANCE.entityToResponse(pack);
+				ProjectResponse projectResponse = projects.stream().filter(project -> project.getId() == pack.getProjectId()).findFirst().get();
+				packResponse.setProject(projectResponse);
+				packResponseList.add(packResponse);
+			}
+		}else
+			for (Pack pack : packRepository.findByPackNameContainingIgnoreCase(name, pageable).getContent()) {
+				PackResponse packResponse = PackMapper.INSTANCE.entityToResponse(pack);
+				ProjectResponse projectResponse = projects.stream().filter(project -> project.getId() == pack.getProjectId()).findFirst().get();
+				packResponse.setProject(projectResponse);
+				packResponseList.add(packResponse);
+			}
+
 		Page<Pack> packs = (name.isBlank()) ? packRepository.findAll(pageable)
-				: packRepository.findByPackName(name, pageable);
-
-		packs.getContent().forEach(pack -> {
-			packResponses.add(PackMapper.INSTANCE.entityToResponse(pack));
-		});
-
+				: packRepository.findByPackNameContainingIgnoreCase(name, pageable);
 		Map<String, Object> requestResponse = new HashMap<>();
-		requestResponse.put("content", packResponses);
+		requestResponse.put("content", packResponseList);
 		requestResponse.put("currentPage", packs.getNumber());
 		requestResponse.put("totalElements", packs.getTotalElements());
 		requestResponse.put("totalPages", packs.getTotalPages());

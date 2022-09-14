@@ -3,7 +3,6 @@ package com.giantlink.project.entities;
 import java.util.Date;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -16,6 +15,9 @@ import javax.persistence.PrePersist;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
@@ -40,15 +42,16 @@ public class Service {
 	private String serviceName;
 	private Float point;
 	private Boolean statut;
-	// should have idProject ?? there is no relationship between service and project
-
-	@ManyToMany(mappedBy = "services", cascade = { CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH })
+	
+	@ManyToMany(mappedBy = "services")
 	@JsonBackReference
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private Set<Lead> leads;
 
-	@ManyToOne(cascade = CascadeType.PERSIST)
+	@ManyToOne()
 	@JoinColumn(name = "serviceType_id", nullable = false)
 	@JsonBackReference
+	@OnDelete(action=OnDeleteAction.CASCADE)
 	private ServiceType serviceType;
 
 	@Temporal(TemporalType.TIMESTAMP)
