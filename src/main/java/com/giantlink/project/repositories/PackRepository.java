@@ -14,5 +14,5 @@ public interface PackRepository extends JpaRepository<Pack, Long> {
 
 	Optional<Pack> findByPackName(String packName);
 
-	Page<Pack> findByPackName(String packName, Pageable pageable);
+	Page<Pack> findByPackNameContainingIgnoreCase(String packName, Pageable pageable);
 }

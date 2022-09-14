@@ -38,8 +38,8 @@ public class Project {
 	private Date finishDate;
 	private Boolean status;
 	
-	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
-	private Set<Pack> packs;
+//	@OneToMany(mappedBy = "project", fetch = FetchType.EAGER)
+//	private Set<Pack> packs;
 
 	@OneToMany(orphanRemoval = false, mappedBy = "project")
 	@JsonManagedReference
