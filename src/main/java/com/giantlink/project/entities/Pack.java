@@ -2,8 +2,6 @@ package com.giantlink.project.entities;
 
 import javax.persistence.*;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,11 +26,6 @@ public class Pack implements Serializable {
 	private Long id;
 	
 	private String packName;
-	
-//	@ManyToOne(cascade = CascadeType.PERSIST)
-//	@JoinColumn(name = "project_id", nullable = false)
-//	@JsonBackReference
-//	private Project project;
 
 	private Long projectId;
 	

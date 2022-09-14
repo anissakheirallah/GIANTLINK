@@ -10,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
-import com.giantlink.project.entities.Client;
 import com.giantlink.project.entities.Service;
 import com.giantlink.project.entities.ServiceType;
 import com.giantlink.project.exceptions.GlAlreadyExistException;
@@ -80,7 +79,7 @@ public class ServiceServiceImpl implements ServiceService {
 		Optional<Service> findService = serviceRepository.findById(id);
 
 		if (!findService.isPresent()) {
-			throw new GlNotFoundException(id.toString(), Client.class.getSimpleName());
+			throw new GlNotFoundException(id.toString(), Service.class.getSimpleName());
 		}
 
 		serviceRepository.deleteById(id);

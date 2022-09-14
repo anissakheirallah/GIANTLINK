@@ -64,7 +64,7 @@ public class LeadController {
 	
 
 	@PutMapping("/{id}")
-	public ResponseEntity<LeadResponse> edit(@PathVariable("id") Long id, @RequestBody LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException  {
+	public ResponseEntity<LeadResponse> edit(@PathVariable("id") Long id, @RequestBody LeadRequest leadRequest) throws GlAlreadyExistException, GlNotFoundException, Exception  {
 		return new ResponseEntity<LeadResponse>(leadService.update(id, leadRequest), HttpStatus.OK);
 	}
 
