@@ -48,7 +48,5 @@ public class Project {
 	@JsonManagedReference
 	private Set<Team> teams;
 
-	@OneToMany(mappedBy = "project")
-	@OnDelete(action=OnDeleteAction.CASCADE)
-	private Set<Option> options;
+
 }

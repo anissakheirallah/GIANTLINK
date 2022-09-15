@@ -40,11 +40,7 @@ public class Option {
 	private Long id;
 	private String optionName;
 
-	@ManyToOne()
-	@JoinColumn(name = "project_id", nullable = false)
-	@JsonBackReference
-	@OnDelete(action=OnDeleteAction.CASCADE)
-	private Project project;
+	private Long projectId;
 
 	/*
 	 * @ManyToOne(cascade = CascadeType.PERSIST)
@@ -54,13 +50,5 @@ public class Option {
 	 * @JsonBackReference private Lead lead;
 	 * 
 	 */
-	@Temporal(TemporalType.TIMESTAMP)
-	@Column(nullable = false)
-	private Date timestamp;
-
-	@PrePersist
-	private void onCreate() {
-		this.timestamp = new Date();
-	}
 
 }

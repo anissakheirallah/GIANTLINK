@@ -1,5 +1,6 @@
 package com.giantlink.project.models.responses;
 
+import com.giantlink.glintranetdto.models.responses.ProjectResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,5 +16,6 @@ public class OptionResponse {
 
 	private Long id;
 	private String optionName;
-	
+	private ProjectResponse project;
+
 }

@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 public class OptionRequest {
 
 	private String optionName;
-	private Long idProject;
-	
-	
+	private Long projectId;
+
+
 }

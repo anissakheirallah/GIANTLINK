@@ -6,9 +6,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.giantlink.glintranetdto.models.responses.ProjectResponse;
+import com.giantlink.project.entities.Pack;
+import com.giantlink.project.mappers.PackMapper;
+import com.giantlink.project.models.responses.PackResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import com.giantlink.project.entities.Option;
@@ -21,6 +26,7 @@ import com.giantlink.project.models.responses.OptionResponse;
 import com.giantlink.project.repositories.OptionRepository;
 import com.giantlink.project.repositories.ProjectRepository;
 import com.giantlink.project.services.OptionService;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 public class OptionServiceImpl implements OptionService {
@@ -30,21 +36,22 @@ public class OptionServiceImpl implements OptionService {
 
 	@Autowired
 	private ProjectRepository projectRepository;
-
+	@Autowired
+	RestTemplate restTemplate;
 	@Override
 	public OptionResponse add(OptionRequest optionRequest) throws GlAlreadyExistException, GlNotFoundException {
 
 		Optional<Option> findOption = optionRepository.findByOptionName(optionRequest.getOptionName());
-		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
-		if (!findProject.isPresent()) {
-			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
-		}
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + optionRequest.getProjectId(), ProjectResponse.class);
+
 		if (findOption.isPresent()) {
 			throw new GlAlreadyExistException(optionRequest.getOptionName(), Option.class.getSimpleName());
 		}
-		Option op = OptionMapper.INSTANCE.requestToEntity(optionRequest);
-		op.setProject(findProject.get());
-		return OptionMapper.INSTANCE.entityToResponse(optionRepository.save(op));
+		Option option = OptionMapper.INSTANCE.requestToEntity(optionRequest);
+		optionRepository.save(option);
+		OptionResponse optionResponse = OptionMapper.INSTANCE.entityToResponse(option);
+		optionResponse.setProject(projectResponse);
+		return optionResponse;
 
 	}
 
@@ -59,7 +66,10 @@ public class OptionServiceImpl implements OptionService {
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-		return OptionMapper.INSTANCE.entityToResponse(optionRepository.findById(id).get());
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + findOption.get().getProjectId(), ProjectResponse.class);
+		OptionResponse response = OptionMapper.INSTANCE.entityToResponse(findOption.get());
+		response.setProject(projectResponse);
+		return response;
 	}
 
 	@Override
@@ -74,38 +84,47 @@ public class OptionServiceImpl implements OptionService {
 	@Override
 	public OptionResponse update(Long id, OptionRequest optionRequest) throws GlNotFoundException {
 		Optional<Option> findOption = optionRepository.findById(id);
-		Optional<Project> findProject = projectRepository.findById(optionRequest.getIdProject());
-		if (!findProject.isPresent()) {
-			throw new GlNotFoundException(optionRequest.getIdProject().toString(), Project.class.getSimpleName());
-		}
+		ProjectResponse projectResponse = restTemplate.getForObject("http://localhost:8091/api/project/" + optionRequest.getProjectId(), ProjectResponse.class);
+		System.out.println(projectResponse);
 		if (!findOption.isPresent()) {
 			throw new GlNotFoundException(id.toString(), Option.class.getSimpleName());
 		}
-		Option option = optionRepository.findById(id).get();
-		option.setOptionName(optionRequest.getOptionName());
-		option.setProject(findProject.get());
-
-		return OptionMapper.INSTANCE.entityToResponse(optionRepository.save(option));
+		Option option = OptionMapper.INSTANCE.requestToEntity(optionRequest);
+		option.setId(id);
+		optionRepository.save(option);
+		OptionResponse optionResponse = OptionMapper.INSTANCE.entityToResponse(option);
+		optionResponse.setProject(projectResponse);
+		return optionResponse;
 	}
 
 	@Override
 	public Map<String, Object> getAllPaginations(String name, Pageable pageable) {
 		List<OptionResponse> optionList = new ArrayList<>();
+		ResponseEntity<ProjectResponse[]> result = restTemplate.getForEntity("http://localhost:8091/api/project",ProjectResponse[].class);
+		List<ProjectResponse> projects = List.of(result.getBody());
+		if(name.isBlank()){
+			for (Option option : optionRepository.findAll(pageable).getContent()) {
+				OptionResponse optionResponse = OptionMapper.INSTANCE.entityToResponse(option);
+				ProjectResponse projectResponse = projects.stream().filter(project -> project.getId() == option.getProjectId()).findFirst().get();
+				optionResponse.setProject(projectResponse);
+				optionList.add(optionResponse);
+			}
+		}else
+			for (Option option : optionRepository.findByOptionNameContainingIgnoreCase(name, pageable).getContent()) {
+				OptionResponse optionResponse = OptionMapper.INSTANCE.entityToResponse(option);
+				ProjectResponse projectResponse = projects.stream().filter(project -> project.getId() == option.getProjectId()).findFirst().get();
+				optionResponse.setProject(projectResponse);
+				optionList.add(optionResponse);
+			}
+
 		Page<Option> options = (name.isBlank()) ? optionRepository.findAll(pageable)
 				: optionRepository.findByOptionNameContainingIgnoreCase(name, pageable);
-		options.getContent().forEach(option -> {
-			OptionResponse response = OptionResponse.builder().id(option.getId()).optionName(option.getOptionName())
-					.build();
-			optionList.add(response);
-		});
-		Map<String, Object> optionMap = new HashMap<>();
-		optionMap.put("content", optionList);
-		optionMap.put("currentPage", options.getNumber());
-		optionMap.put("totalElements", options.getTotalElements());
-		optionMap.put("totalPages", options.getTotalPages());
-
-		return optionMap;
-
+		Map<String, Object> requestResponse = new HashMap<>();
+		requestResponse.put("content", optionList);
+		requestResponse.put("currentPage", options.getNumber());
+		requestResponse.put("totalElements", options.getTotalElements());
+		requestResponse.put("totalPages", options.getTotalPages());
+		return requestResponse;
 	}
 
 }
